@@ -539,6 +539,7 @@ function BountySubmissionDetailsSheetContent({
             {submission.status === "approved" && submission.commission?.id ? (
               <Link
                 href={`/${workspaceSlug}/program/commissions/${submission.commission.id}`}
+                target="_blank"
                 className="w-full"
               >
                 <Button variant="secondary" text="View commission" />
