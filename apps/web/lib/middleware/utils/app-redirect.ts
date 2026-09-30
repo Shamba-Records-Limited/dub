@@ -1,5 +1,7 @@
 import { getWorkspaceProduct } from "./get-workspace-product";
 
+const EXCLUDED_PAGES = ["/workspaces"];
+
 const APP_REDIRECTS = {
   "/account": "/account/settings",
   "/referrals": "/account/settings/referrals",
@@ -24,6 +26,10 @@ const PROGRAM_REDIRECTS = {
 };
 
 export const appRedirect = async (path: string) => {
+  if (EXCLUDED_PAGES.includes(path)) {
+    return null;
+  }
+
   if (APP_REDIRECTS[path]) {
     return APP_REDIRECTS[path];
   }
