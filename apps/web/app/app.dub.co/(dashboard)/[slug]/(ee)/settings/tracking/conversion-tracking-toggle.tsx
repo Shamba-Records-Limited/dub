@@ -73,6 +73,9 @@ export function ConversionTrackingToggle() {
 
   const { canTrackConversions } = getPlanCapabilities(plan);
 
+  // Allow turning conversion tracking off even if the plan no longer supports it
+  const isPlanLocked = !canTrackConversions && !conversionEnabled;
+
   const { isMobile } = useMediaQuery();
 
   if (isMobile) return null;
@@ -80,7 +83,7 @@ export function ConversionTrackingToggle() {
   return (
     <Tooltip
       content={
-        !canTrackConversions ? (
+        isPlanLocked ? (
           <TooltipContent
             title="You can only enable conversion tracking on Business plans and above."
             cta="Upgrade to Business"
@@ -88,7 +91,7 @@ export function ConversionTrackingToggle() {
           />
         ) : (
           permissionsError || (
-            <p className="max-w-xs p-3 text-xs text-content-default">
+            <p className="text-content-default max-w-xs p-3 text-xs">
               <strong className="font-semibold">
                 Workspace-level conversion tracking is{" "}
                 {conversionEnabled ? "on" : "off"}
@@ -103,22 +106,22 @@ export function ConversionTrackingToggle() {
     >
       <label
         className={cn(
-          "flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-border-subtle bg-bg-subtle px-3 text-content-default",
+          "bg-bg-subtle text-content-default border-border-subtle flex h-9 cursor-pointer items-center gap-2 rounded-lg border px-3",
           "transition-colors duration-100 ease-out",
           conversionEnabled &&
-            "border-bg-inverted bg-bg-inverted text-content-inverted",
-          (!canTrackConversions || permissionsError) &&
+            "bg-bg-inverted text-content-inverted border-bg-inverted",
+          (isPlanLocked || permissionsError) &&
             "cursor-not-allowed opacity-50",
         )}
       >
         <span className="text-sm font-medium">Conversion tracking</span>
         <Switch
           checked={conversionEnabled}
-          disabled={isSubmitting || !canTrackConversions || !!permissionsError}
+          disabled={isSubmitting || isPlanLocked || !!permissionsError}
           fn={handleConversionUpdate}
           trackDimensions="radix-state-checked:bg-neutral-600 focus-visible:ring-black/20"
           thumbIcon={
-            !canTrackConversions ? (
+            isPlanLocked ? (
               <CrownSmall className="size-full text-neutral-500" />
             ) : undefined
           }

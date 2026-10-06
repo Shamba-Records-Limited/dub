@@ -162,6 +162,10 @@ export const RichTextProvider = forwardRef<
     // Ref to avoid stale closures in editorProps handlers below
     const editorRef = useRef<Editor | null>(null);
 
+    // Read through a ref so the placeholder can change after the editor is created
+    const placeholderRef = useRef(placeholder);
+    placeholderRef.current = placeholder;
+
     const openLinkModal = useCallback((pos?: number) => {
       const editor = editorRef.current;
       if (!editor) return;
@@ -253,7 +257,7 @@ export const RichTextProvider = forwardRef<
           : []),
 
         Placeholder.configure({
-          placeholder,
+          placeholder: () => placeholderRef.current,
           emptyEditorClass:
             "before:content-[attr(data-placeholder)] before:float-left before:text-content-muted before:h-0 before:pointer-events-none",
         }),
@@ -439,6 +443,12 @@ export const RichTextProvider = forwardRef<
     useEffect(() => {
       editor?.setEditable(editable ?? true);
     }, [editor, editable]);
+
+    // An empty transaction redraws the placeholder decoration
+    useEffect(() => {
+      if (!editor || editor.isDestroyed) return;
+      editor.view.dispatch(editor.state.tr);
+    }, [editor, placeholder]);
 
     useImperativeHandle(ref, () => ({
       setContent: (content: any) => {

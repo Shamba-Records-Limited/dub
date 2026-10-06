@@ -3,6 +3,11 @@
 import { constructRewardAmount } from "@/lib/api/sales/construct-reward-amount";
 import { getPlanCapabilities } from "@/lib/plan-capabilities";
 import { getCustomerSourceAvailability } from "@/lib/rewards/get-customer-source-availability";
+import {
+  getConditionOperators,
+  isRewardConditionComplete,
+  suggestionTouchesField,
+} from "@/lib/rewards/validate-tooltip-suggestion";
 import useIntegrations from "@/lib/swr/use-integrations";
 import useProgram from "@/lib/swr/use-program";
 import useWorkspace from "@/lib/swr/use-workspace";
@@ -10,15 +15,11 @@ import { RECURRING_MAX_DURATIONS } from "@/lib/zod/schemas/misc";
 import {
   CONDITION_OPERATOR_LABELS,
   CONDITION_OPERATORS,
-  DATE_CONDITION_OPERATORS,
-  ENUM_CONDITION_OPERATORS,
   METADATA_CONDITION_OPERATORS,
   METADATA_NUMBER_CONDITION_OPERATORS,
   METADATA_TEXT_CONDITION_OPERATORS,
-  NUMBER_CONDITION_OPERATORS,
   REWARD_CONDITIONS,
   RewardConditionEntityAttribute,
-  STRING_CONDITION_OPERATORS,
 } from "@/lib/zod/schemas/rewards";
 import { CountryFlag } from "@/ui/shared/country-flag";
 import { DurationPopoverContent } from "@/ui/shared/duration-popover-content";
@@ -63,6 +64,12 @@ import {
 } from "../../shared/inline-badge-popover";
 import { useAddEditRewardForm } from "./add-edit-reward-sheet";
 import { RewardIconSquare } from "./reward-icon-square";
+import {
+  SuggestedFixBadge,
+  SuggestedFixNoticeBadge,
+  SuggestedFixPopoverHost,
+} from "./suggested-fix-popover";
+import { useRewardTooltipConsistencyContext } from "./use-reward-tooltip-consistency";
 
 export const REWARD_TYPES = [
   {
@@ -82,7 +89,7 @@ export function RewardsLogic({
 }) {
   const { plan } = useWorkspace();
 
-  const { control, getValues } = useAddEditRewardForm();
+  const { control, getValues, setValue } = useAddEditRewardForm();
 
   const {
     fields: modifierFields,
@@ -94,57 +101,63 @@ export function RewardsLogic({
   });
 
   return (
-    <div
-      className={cn("flex flex-col gap-2", !!modifierFields.length && "-mt-2")}
-    >
-      {modifierFields.map((field, index) => (
-        <ConditionalGroup
-          key={field.id}
-          index={index}
-          groupCount={modifierFields.length}
-          onRemove={() => removeModifier(index)}
-        />
-      ))}
-      <Button
-        className="h-8 rounded-lg"
-        icon={<ArrowTurnRight2 className="size-4" />}
-        text={
-          <div className="flex items-center gap-2">
-            <span>Add condition</span>
-            {!getPlanCapabilities(plan).canUseAdvancedRewardLogic && (
-              <div
-                className={cn(
-                  "rounded-sm px-1.5 py-1 text-[0.625rem] uppercase leading-none",
-                  isDefaultReward
-                    ? "bg-violet-500/50 text-violet-200"
-                    : "bg-violet-50 text-violet-600",
-                )}
-              >
-                Upgrade required
-              </div>
-            )}
-          </div>
-        }
-        onClick={() => {
-          const type = getValues("type");
+    <>
+      <SuggestedFixPopoverHost />
+      <div
+        className={cn(
+          "flex flex-col gap-2",
+          !!modifierFields.length && "-mt-2",
+        )}
+      >
+        {modifierFields.map((field, index) => (
+          <ConditionalGroup
+            key={field.id}
+            index={index}
+            groupCount={modifierFields.length}
+            onRemove={() => removeModifier(index)}
+          />
+        ))}
+        <Button
+          className="h-8 rounded-lg"
+          icon={<ArrowTurnRight2 className="size-4" />}
+          text={
+            <div className="flex items-center gap-2">
+              <span>Add condition</span>
+              {!getPlanCapabilities(plan).canUseAdvancedRewardLogic && (
+                <div
+                  className={cn(
+                    "rounded-sm px-1.5 py-1 text-[0.625rem] uppercase leading-none",
+                    isDefaultReward
+                      ? "bg-violet-500/50 text-violet-200"
+                      : "bg-violet-50 text-violet-600",
+                  )}
+                >
+                  Upgrade required
+                </div>
+              )}
+            </div>
+          }
+          onClick={() => {
+            const type = getValues("type");
 
-          appendModifier({
-            id: uuid(),
-            operator: "AND",
-            conditions: [{}],
-            amountInCents:
-              type === "flat" ? getValues("amountInCents") || 0 : undefined,
-            amountInPercentage:
-              type === "percentage"
-                ? getValues("amountInPercentage") || 0
-                : undefined,
-            type,
-            maxDuration: getValues("maxDuration"),
-          });
-        }}
-        variant={isDefaultReward ? "primary" : "secondary"}
-      />
-    </div>
+            appendModifier({
+              id: uuid(),
+              operator: "AND",
+              conditions: [{}],
+              amountInCents:
+                type === "flat" ? getValues("amountInCents") || 0 : undefined,
+              amountInPercentage:
+                type === "percentage"
+                  ? getValues("amountInPercentage") || 0
+                  : undefined,
+              type,
+              maxDuration: getValues("maxDuration"),
+            });
+          }}
+          variant={isDefaultReward ? "primary" : "secondary"}
+        />
+      </div>
+    </>
   );
 }
 
@@ -178,7 +191,7 @@ function ConditionalGroup({
         </div>
         <div className="flex items-center gap-1">
           {groupCount > 1 && (
-            <div className="flex h-5 items-center rounded-md bg-neutral-200 px-2 text-xs font-medium text-content-default">
+            <div className="text-content-default flex h-5 items-center rounded-md bg-neutral-200 px-2 text-xs font-medium">
               #{index + 1}
             </div>
           )}
@@ -191,10 +204,10 @@ function ConditionalGroup({
         </div>
       </div>
 
-      <div className="rounded-lg border border-border-subtle bg-white p-2.5">
+      <div className="border-border-subtle rounded-lg border bg-white p-2.5">
         {conditions.map((condition, conditionIndex) => (
           <Fragment key={condition.id}>
-            <div className="rounded-md border border-border-subtle bg-white">
+            <div className="border-border-subtle rounded-md border bg-white">
               <ConditionLogic
                 modifierIndex={index}
                 conditionIndex={conditionIndex}
@@ -218,7 +231,7 @@ function ConditionalGroup({
           />
         </div>
         <VerticalLine />
-        <div className="flex items-center gap-2.5 rounded-md border border-border-subtle bg-white p-2.5">
+        <div className="border-border-subtle flex items-center gap-2.5 rounded-md border bg-white p-2.5">
           <RewardIconSquare icon={MoneyBills2} />
           <ResultTerms modifierIndex={index} />
         </div>
@@ -260,8 +273,7 @@ const formatValue = (
         .map((v) =>
           truncate(
             attribute?.options
-              ? (attribute.options.find((o) => o.id === v)?.label ??
-                  v.toString())
+              ? attribute.options.find((o) => o.id === v)?.label ?? v.toString()
               : v.toString(),
             16,
           ),
@@ -335,11 +347,11 @@ function MetadataConditionOperatorMenu({
       }}
       className="flex cursor-pointer items-center justify-between rounded-md px-1.5 py-1 transition-colors duration-150 data-[selected=true]:bg-neutral-100"
     >
-      <span className="pr-3 text-left text-sm font-medium text-content-default">
+      <span className="text-content-default pr-3 text-left text-sm font-medium">
         {CONDITION_OPERATOR_LABELS[op]}
       </span>
       {selectedValue === op && (
-        <Check2 className="size-3.5 shrink-0 text-content-emphasis" />
+        <Check2 className="text-content-emphasis size-3.5 shrink-0" />
       )}
     </Command.Item>
   );
@@ -347,18 +359,18 @@ function MetadataConditionOperatorMenu({
   return (
     <div className="-mx-1 box-border w-[calc(100%+0.5rem)] min-w-0 max-w-none">
       <Command loop className="w-full focus:outline-none">
-        <Command.List className="flex max-h-64 w-full max-w-52 flex-col gap-1 overflow-y-auto transition-all scrollbar-hide">
-          <div className="mx-2 py-2 text-xs font-medium text-content-subtle">
+        <Command.List className="scrollbar-hide flex max-h-64 w-full max-w-52 flex-col gap-1 overflow-y-auto transition-all">
+          <div className="text-content-subtle mx-2 py-2 text-xs font-medium">
             Text fields
           </div>
           <div className="mx-1 flex flex-col gap-1">
             {METADATA_TEXT_CONDITION_OPERATORS.map(renderItem)}
           </div>
           <div
-            className="mt-1 h-px w-full min-w-0 shrink-0 bg-border-subtle"
+            className="bg-border-subtle mt-1 h-px w-full min-w-0 shrink-0"
             role="separator"
           />
-          <div className="mx-2 py-2 text-xs font-medium text-content-subtle">
+          <div className="text-content-subtle mx-2 py-2 text-xs font-medium">
             Number fields
           </div>
           <div className="mx-1 flex flex-col gap-1">
@@ -395,6 +407,26 @@ function ConditionLogic({
     control,
     name: ["event", conditionKey, `${modifierKey}.operator`],
   });
+  const suggestion = useRewardTooltipConsistencyContext()?.getSuggestion(
+    modifierIndex,
+    conditionIndex,
+  );
+  const highlightOperator = Boolean(
+    suggestion &&
+      suggestionTouchesField({
+        field: "operator",
+        current: condition ?? {},
+        suggested: suggestion.suggested,
+      }),
+  );
+  const highlightValue = Boolean(
+    suggestion &&
+      suggestionTouchesField({
+        field: "value",
+        current: condition ?? {},
+        suggested: suggestion.suggested,
+      }),
+  );
 
   const [displayProductLabel, setDisplayProductLabel] = useState(false);
 
@@ -420,12 +452,12 @@ function ConditionLogic({
     METADATA_NUMBER_CONDITION_OPERATORS.includes(condition.operator);
 
   const icon = entity
-    ? ({
+    ? {
         customer: User,
         sale: InvoiceDollar,
         partner: Users,
         lead: UserPlus,
-      }[entity.id] ?? User)
+      }[entity.id] ?? User
     : ArrowTurnRight2;
 
   const isArrayValue =
@@ -441,16 +473,7 @@ function ConditionLogic({
   const isSaleTypeCondition =
     condition?.entity === "sale" && condition?.attribute === "type";
 
-  const availableConditionOperators: (typeof CONDITION_OPERATORS)[number][] =
-    attributeType === "metadata"
-      ? METADATA_CONDITION_OPERATORS
-      : ["number", "currency"].includes(attributeType)
-        ? NUMBER_CONDITION_OPERATORS
-        : attributeType === "enum"
-          ? ENUM_CONDITION_OPERATORS
-          : attributeType === "date"
-            ? DATE_CONDITION_OPERATORS
-            : STRING_CONDITION_OPERATORS;
+  const availableConditionOperators = getConditionOperators(attributeType);
 
   useEffect(() => {
     if (
@@ -512,7 +535,7 @@ function ConditionLogic({
       <div className="flex items-center justify-between p-2.5">
         <div className="flex items-center gap-1.5">
           <RewardIconSquare icon={icon} />
-          <span className="font-medium leading-relaxed text-content-emphasis">
+          <span className="text-content-emphasis font-medium leading-relaxed">
             {conditionIndex === 0 ? "If" : capitalize(operator?.toLowerCase())}{" "}
             <InlineBadgePopover
               text={capitalize(condition.entity) || "Select item"}
@@ -595,7 +618,14 @@ function ConditionLogic({
                   </>
                 )}
                 {isCustomerSourceCondition || isSaleTypeCondition ? (
-                  <span className="font-medium text-content-emphasis">is </span>
+                  <span className="text-content-emphasis font-medium">is </span>
+                ) : highlightOperator && condition.operator ? (
+                  <SuggestedFixBadge
+                    text={CONDITION_OPERATOR_LABELS[condition.operator]}
+                    field="operator"
+                    modifierIndex={modifierIndex}
+                    conditionIndex={conditionIndex}
+                  />
                 ) : (
                   <InlineBadgePopover
                     text={
@@ -675,7 +705,22 @@ function ConditionLogic({
                 )}{" "}
                 {condition.operator && (
                   <>
-                    {attributeType === "date" && !isMetadataCondition ? (
+                    {highlightValue ? (
+                      <SuggestedFixBadge
+                        text={
+                          formatValue(
+                            condition.value,
+                            attribute,
+                            isMetadataCondition
+                              ? condition.operator
+                              : undefined,
+                          ) ?? "Value"
+                        }
+                        field="value"
+                        modifierIndex={modifierIndex}
+                        conditionIndex={conditionIndex}
+                      />
+                    ) : attributeType === "date" && !isMetadataCondition ? (
                       <DatePicker
                         value={
                           condition.value
@@ -937,9 +982,9 @@ function ConditionLogic({
             }}
             className="overflow-hidden"
           >
-            <div className="flex items-center gap-1.5 border-t border-border-subtle p-2.5">
+            <div className="border-border-subtle flex items-center gap-1.5 border-t p-2.5">
               <RewardIconSquare icon={Package} />
-              <span className="font-medium leading-relaxed text-content-emphasis">
+              <span className="text-content-emphasis font-medium leading-relaxed">
                 Shown as{" "}
                 <InlineBadgePopover
                   text={condition.label || "Product name"}
@@ -988,11 +1033,11 @@ function OperatorDropdown({ modifierIndex }: { modifierIndex: number }) {
                   }}
                   className="flex cursor-pointer items-center justify-between rounded-md px-1.5 py-1 transition-colors duration-150 hover:bg-neutral-100"
                 >
-                  <span className="pr-3 text-left text-sm font-medium text-content-default">
+                  <span className="text-content-default pr-3 text-left text-sm font-medium">
                     {value}
                   </span>
                   {currentValue === value && (
-                    <Check2 className="size-3.5 shrink-0 text-content-emphasis" />
+                    <Check2 className="text-content-emphasis size-3.5 shrink-0" />
                   )}
                 </Command.Item>
               ))}
@@ -1003,15 +1048,67 @@ function OperatorDropdown({ modifierIndex }: { modifierIndex: number }) {
     >
       <button
         type="button"
-        className="group flex h-7 items-center gap-1.5 rounded-md border border-border-subtle bg-white px-2.5 font-medium text-content-emphasis transition-colors duration-150 hover:bg-neutral-50"
+        className="border-border-subtle text-content-emphasis group flex h-7 items-center gap-1.5 rounded-md border bg-white px-2.5 font-medium transition-colors duration-150 hover:bg-neutral-50"
       >
         <div className="flex items-center gap-1.5">
           <span>{currentValue}</span>
-          <ChevronRight className="size-2.5 shrink-0 rotate-90 text-content-subtle [&_*]:stroke-2" />
+          <ChevronRight className="text-content-subtle size-2.5 shrink-0 rotate-90 [&_*]:stroke-2" />
         </div>
       </button>
     </Popover>
   );
+}
+
+function payoutMatchesBase({
+  event,
+  type,
+  amountInCents,
+  amountInPercentage,
+  maxDuration,
+  parentType,
+  parentAmountInCents,
+  parentAmountInPercentage,
+  parentMaxDuration,
+}: {
+  event?: string | null;
+  type?: string | null;
+  amountInCents?: number | null;
+  amountInPercentage?: number | null;
+  maxDuration?: number | null;
+  parentType?: string | null;
+  parentAmountInCents?: number | null;
+  parentAmountInPercentage?: number | null;
+  parentMaxDuration?: number | null;
+}) {
+  const displayType =
+    type === "flat" || type === "percentage" ? type : parentType;
+
+  if (displayType !== "flat" && displayType !== "percentage") return false;
+  if (displayType !== parentType) return false;
+
+  const amount =
+    displayType === "percentage" ? amountInPercentage : amountInCents;
+  const parentAmount =
+    parentType === "percentage"
+      ? parentAmountInPercentage
+      : parentAmountInCents;
+
+  if (typeof amount !== "number" || !Number.isFinite(amount)) return false;
+  if (typeof parentAmount !== "number" || !Number.isFinite(parentAmount)) {
+    return false;
+  }
+  if (amount !== parentAmount) return false;
+  if (event !== "sale") return true;
+
+  const duration = maxDuration !== undefined ? maxDuration : parentMaxDuration;
+  const currentDuration =
+    duration == null || !Number.isFinite(duration) ? null : duration;
+  const baseDuration =
+    parentMaxDuration == null || !Number.isFinite(parentMaxDuration)
+      ? null
+      : parentMaxDuration;
+
+  return currentDuration === baseDuration;
 }
 
 function ResultTerms({ modifierIndex }: { modifierIndex: number }) {
@@ -1025,7 +1122,10 @@ function ResultTerms({ modifierIndex }: { modifierIndex: number }) {
     maxDuration,
     event,
     parentType,
+    parentAmountInCents,
+    parentAmountInPercentage,
     parentMaxDuration,
+    conditions,
   ] = useWatch({
     control,
     name: [
@@ -1035,9 +1135,15 @@ function ResultTerms({ modifierIndex }: { modifierIndex: number }) {
       `${modifierKey}.maxDuration`,
       "event",
       "type",
+      "amountInCents",
+      "amountInPercentage",
       "maxDuration",
+      `${modifierKey}.conditions`,
     ],
   });
+  const [dismissedRedundantPayout, setDismissedRedundantPayout] =
+    useState(false);
+  const [flagPayout, setFlagPayout] = useState(false);
 
   // Use parent values as fallbacks if modifier doesn't have type or maxDuration
   const displayType = type || parentType;
@@ -1045,6 +1151,66 @@ function ResultTerms({ modifierIndex }: { modifierIndex: number }) {
     maxDuration !== undefined ? maxDuration : parentMaxDuration;
 
   const amount = displayType === "flat" ? amountInCents : amountInPercentage;
+  const redundantPayout = payoutMatchesBase({
+    event,
+    type,
+    amountInCents,
+    amountInPercentage,
+    maxDuration,
+    parentType,
+    parentAmountInCents,
+    parentAmountInPercentage,
+    parentMaxDuration,
+  });
+  const conditionsComplete =
+    !!event &&
+    !!conditions?.length &&
+    conditions.every((condition) =>
+      isRewardConditionComplete({ event, condition }),
+    );
+  const flagKey =
+    redundantPayout && conditionsComplete && !dismissedRedundantPayout
+      ? JSON.stringify({
+          amountInCents,
+          amountInPercentage,
+          type,
+          maxDuration,
+          parentAmountInCents,
+          parentAmountInPercentage,
+          parentType,
+          parentMaxDuration,
+          conditions,
+        })
+      : null;
+
+  useEffect(() => {
+    if (!redundantPayout) setDismissedRedundantPayout(false);
+  }, [redundantPayout]);
+
+  useEffect(() => {
+    setFlagPayout(false);
+
+    if (!flagKey) return;
+
+    const timeout = window.setTimeout(() => setFlagPayout(true), 5000);
+
+    return () => window.clearTimeout(timeout);
+  }, [flagKey]);
+  const amountLabel =
+    amount != null && !isNaN(amount)
+      ? constructRewardAmount({
+          type: displayType,
+          amountInCents: displayType === "flat" ? amount * 100 : undefined,
+          amountInPercentage: displayType === "percentage" ? amount : undefined,
+          maxDuration: displayMaxDuration,
+        })
+      : "amount";
+  const durationLabel =
+    displayMaxDuration === 0
+      ? "one time"
+      : displayMaxDuration === Infinity
+        ? "for the customer's lifetime"
+        : `for ${displayMaxDuration} ${pluralize("month", Number(displayMaxDuration))}`;
 
   return (
     <span className="leading-relaxed">
@@ -1066,36 +1232,25 @@ function ResultTerms({ modifierIndex }: { modifierIndex: number }) {
           {displayType === "percentage" && "of "}
         </>
       )}
-      <InlineBadgePopover
-        text={
-          amount != null && !isNaN(amount)
-            ? constructRewardAmount({
-                type: displayType,
-                amountInCents:
-                  displayType === "flat" ? amount * 100 : undefined,
-                amountInPercentage:
-                  displayType === "percentage" ? amount : undefined,
-                maxDuration: displayMaxDuration,
-              })
-            : "amount"
-        }
-        invalid={amount == null || isNaN(amount)}
-      >
-        <ResultAmountInput modifierKey={modifierKey} />
-      </InlineBadgePopover>{" "}
+      {flagPayout ? (
+        <SuggestedFixNoticeBadge
+          text={amountLabel}
+          message="This pays the same as the default reward, so it doesn't change what partners earn."
+          onDiscard={() => setDismissedRedundantPayout(true)}
+        />
+      ) : (
+        <InlineBadgePopover
+          text={amountLabel}
+          invalid={amount == null || isNaN(amount)}
+        >
+          <ResultAmountInput modifierKey={modifierKey} />
+        </InlineBadgePopover>
+      )}{" "}
       per {event}
       {event === "sale" && (
         <>
           {" "}
-          <InlineBadgePopover
-            text={
-              displayMaxDuration === 0
-                ? "one time"
-                : displayMaxDuration === Infinity
-                  ? "for the customer's lifetime"
-                  : `for ${displayMaxDuration} ${pluralize("month", Number(displayMaxDuration))}`
-            }
-          >
+          <InlineBadgePopover text={durationLabel}>
             <DurationPopoverContent
               value={displayMaxDuration ?? undefined}
               onChange={(value) =>
@@ -1172,5 +1327,5 @@ function AmountInput({
 }
 
 const VerticalLine = () => (
-  <div className="ml-6 h-4 w-px shrink-0 bg-border-subtle" />
+  <div className="bg-border-subtle ml-6 h-4 w-px shrink-0" />
 );
