@@ -8,6 +8,7 @@ import { InvoiceStatus, Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import * as z from "zod/v4";
 import { getPayoutsTimeseries } from "./get-payouts-timeseries";
+import { getTopProgramsByPayouts } from "./get-top-programs-by-payouts";
 
 const adminPayoutsQuerySchema = z
   .object({
@@ -71,36 +72,39 @@ export const GET = withAdmin(async ({ searchParams }) => {
     },
   };
 
-  const [invoices, totalInvoices] = await Promise.all([
-    prisma.invoice.findMany({
-      where: invoiceWhere,
-      include: {
-        program: {
-          select: {
-            name: true,
-            logo: true,
+  const [invoices, totalInvoices, timeseriesData, programs] = await Promise.all(
+    [
+      prisma.invoice.findMany({
+        where: invoiceWhere,
+        include: {
+          program: {
+            select: {
+              name: true,
+              logo: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      skip: ((page ?? 1) - 1) * pageSize,
-      take: pageSize,
-    }),
-    prisma.invoice.count({
-      where: invoiceWhere,
-    }),
-  ]);
-
-  const timeseriesData = await getPayoutsTimeseries({
-    programId,
-    status,
-    startDate,
-    endDate,
-    granularity,
-    timezone,
-  });
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip: ((page ?? 1) - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.invoice.count({
+        where: invoiceWhere,
+      }),
+      getPayoutsTimeseries({
+        programId,
+        status,
+        startDate,
+        endDate,
+        granularity,
+        timezone,
+      }),
+      // not scoped to programId so the program filter always lists all top programs
+      getTopProgramsByPayouts({ status, startDate, endDate }),
+    ],
+  );
 
   const formattedInvoices = invoices.map((invoice) => ({
     date: invoice.createdAt,
@@ -118,5 +122,6 @@ export const GET = withAdmin(async ({ searchParams }) => {
     invoices: formattedInvoices,
     timeseriesData,
     totalInvoices,
+    programs,
   });
 });

@@ -1,17 +1,22 @@
+import { useSubmittedLeadComments } from "@/lib/swr/use-submitted-lead-comments";
 import { SubmittedLeadProps } from "@/lib/types";
 import { useConfirmSubmittedLeadStatusChangeModal } from "@/ui/modals/confirm-submitted-lead-status-change-modal";
 import { X } from "@/ui/shared/icons";
+import { SheetTabs, formatTabBadgeCount } from "@/ui/shared/sheet-tabs";
 import {
   Button,
   ChevronLeft,
   ChevronRight,
+  Msg,
   Sheet,
+  UserPlus,
   useKeyboardShortcut,
   useRouterStuff,
 } from "@dub/ui";
 import { SubmittedLeadStatus } from "@prisma/client";
 import { Dispatch, SetStateAction, useState } from "react";
 import { SubmittedLeadActivitySection } from "../activity-logs/submitted-lead-activity-section";
+import { SubmittedLeadComments } from "./submitted-lead-comments";
 import { SubmittedLeadContactDetails } from "./submitted-lead-contact-details";
 import { SubmittedLeadDetails } from "./submitted-lead-details";
 import { SubmittedLeadPartnerDetails } from "./submitted-lead-partner-details";
@@ -31,6 +36,13 @@ function SubmittedLeadSheetContent({
 }: SubmittedLeadSheetProps) {
   const [pendingStatus, setPendingStatus] =
     useState<SubmittedLeadStatus | null>(null);
+
+  const [currentTabId, setCurrentTabId] = useState("details");
+
+  const { comments } = useSubmittedLeadComments(
+    { leadId: lead.id },
+    { keepPreviousData: true },
+  );
 
   const {
     ConfirmSubmittedLeadStatusChangeModal,
@@ -123,7 +135,29 @@ function SubmittedLeadSheetContent({
         <div className="grid min-h-0 grow grid-cols-1 gap-x-6 gap-y-4 overflow-y-auto p-4 scrollbar-hide @3xl/sheet:grid-cols-[minmax(440px,1fr)_minmax(0,360px)] sm:p-6">
           {/* Left side - Lead details */}
           <div className="flex flex-col gap-6">
-            <SubmittedLeadDetails lead={{ formData: lead.formData }} />
+            <div className="overflow-hidden rounded-xl border border-border-subtle bg-neutral-100">
+              <SheetTabs
+                tabs={[
+                  { id: "details", label: "Lead Details", icon: UserPlus },
+                  {
+                    id: "comments",
+                    label: "Comments",
+                    icon: Msg,
+                    badge: formatTabBadgeCount(comments?.length),
+                  },
+                ]}
+                currentTabId={currentTabId}
+                setCurrentTabId={setCurrentTabId}
+              />
+              <div className="-mx-px -mb-px rounded-xl border border-border-subtle bg-white p-4">
+                {currentTabId === "details" && (
+                  <SubmittedLeadDetails lead={{ formData: lead.formData }} />
+                )}
+                {currentTabId === "comments" && (
+                  <SubmittedLeadComments leadId={lead.id} />
+                )}
+              </div>
+            </div>
             <SubmittedLeadActivitySection leadId={lead.id} />
           </div>
 

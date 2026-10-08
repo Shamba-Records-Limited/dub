@@ -18,21 +18,17 @@ export function SubmittedLeadDetails({ lead }: SubmittedLeadDetailsProps) {
   });
 
   return (
-    <div className="@3xl/sheet:order-1">
-      <div className="overflow-hidden rounded-xl border border-border-subtle bg-white p-4">
-        <div className="grid grid-cols-1 gap-4 text-sm text-neutral-600">
-          {displayFormData?.map((field) => (
-            <div key={field.key}>
-              <div className="text-sm font-semibold text-content-default">
-                {field.label}
-              </div>
-              <div className="whitespace-pre-line text-wrap text-sm text-content-default">
-                {formatFormDataValue(field.value)}
-              </div>
-            </div>
-          ))}
+    <div className="grid grid-cols-1 gap-4 text-sm text-neutral-600">
+      {displayFormData?.map((field) => (
+        <div key={field.key}>
+          <div className="text-sm font-semibold text-content-default">
+            {field.label}
+          </div>
+          <div className="whitespace-pre-line text-wrap text-sm text-content-default">
+            {formatFormDataValue(field.value)}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }

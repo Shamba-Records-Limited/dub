@@ -439,10 +439,10 @@ export function UsageChart() {
                 return (
                   <>
                     <div className="flex items-center justify-between gap-4 px-4 py-3 text-xs">
-                      <span className="text-content-emphasis font-semibold">
+                      <span className="font-semibold text-content-emphasis">
                         {formatDate(d.date)}
                       </span>
-                      <span className="text-content-default font-medium">
+                      <span className="font-medium text-content-default">
                         {formatValue(d.values.usage)}
                       </span>
                     </div>

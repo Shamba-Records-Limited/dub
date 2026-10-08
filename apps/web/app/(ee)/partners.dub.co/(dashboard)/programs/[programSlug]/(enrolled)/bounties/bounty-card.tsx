@@ -84,14 +84,15 @@ export function PartnerBountyCard({
         </div>
       )}
 
-      {showRewards && bounty.submissions.some((s) => s.commission != null) && (
-        <div className="hidden border-t border-border-subtle p-4 @3xl/page:block">
-          <BountyRewardsTable
-            bounty={bounty}
-            programSlug={programSlug as string}
-          />
-        </div>
-      )}
+      {showRewards &&
+        bounty.submissions.some((s) => s.commissions.length > 0) && (
+          <div className="hidden border-t border-border-subtle p-4 @3xl/page:block">
+            <BountyRewardsTable
+              bounty={bounty}
+              programSlug={programSlug as string}
+            />
+          </div>
+        )}
     </As>
   );
 }
@@ -105,9 +106,7 @@ export function BountyRewardsTable({
   programSlug?: string;
   className?: string;
 }) {
-  const rewards = bounty.submissions
-    .filter((s) => s.commission != null)
-    .map((s) => s.commission!);
+  const rewards = bounty.submissions.flatMap((s) => s.commissions);
 
   const { table, ...tableProps } = useTable({
     data: rewards,
