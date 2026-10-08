@@ -240,6 +240,8 @@ async function approveSocialMetricsMilestones({
       where: {
         id: submissionId,
         approvedSocialMetricThreshold: submission.approvedSocialMetricThreshold,
+        // A sync can change the count after we read it, so the status would be based on stale milestones
+        socialMetricCount: submission.socialMetricCount,
         status: {
           notIn: [
             BountySubmissionStatus.approved,
@@ -249,7 +251,9 @@ async function approveSocialMetricsMilestones({
       },
       data: {
         approvedSocialMetricThreshold: approvedThreshold,
-        status: completesEarningCap ? "approved" : "submitted",
+        status: completesEarningCap
+          ? BountySubmissionStatus.approved
+          : BountySubmissionStatus.partiallyApproved,
         reviewedAt: new Date(),
         userId: user.id,
         rejectionNote: null,
@@ -262,7 +266,7 @@ async function approveSocialMetricsMilestones({
         throw new DubApiError({
           code: "bad_request",
           message:
-            "These milestones have already been approved or the submission is no longer awaiting review.",
+            "These milestones have already been approved, the social metrics changed, or the submission is no longer awaiting review. Refresh and try again.",
         });
       }
 

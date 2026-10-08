@@ -25,18 +25,21 @@ export default function PendingApplicationsSummary({
   partners = [
     {
       id: "pn_1JPBEGP7EXF76CXT1W99VERW5",
+      applicationId: "pga_1JPBEGP7EXF76CXT1W99VERW5",
       name: "Sarah Charpentier",
       email: "sarah@floridaman.org",
       image: `${OG_AVATAR_URL}pn_1JPBEGP7EXF76CXT1W99VERW5`,
     },
     {
       id: "pn_1JPBEGP7EXF76CXT1W99VERW6",
+      applicationId: "pga_1JPBEGP7EXF76CXT1W99VERW6",
       name: "Derek Forbes",
       email: "d.forbes@gmail.com",
       image: `${OG_AVATAR_URL}pn_1JPBEGP7EXF76CXT1W99VERW6`,
     },
     {
       id: "pn_1JPBEGP7EXF76CXT1W99VERW7",
+      applicationId: "pga_1JPBEGP7EXF76CXT1W99VERW7",
       name: "Marvin Ta",
       email: "marvin@email.com",
       image: `${OG_AVATAR_URL}pn_1JPBEGP7EXF76CXT1W99VERW7`,
@@ -51,6 +54,7 @@ export default function PendingApplicationsSummary({
   };
   partners: {
     id: string;
+    applicationId: string;
     name: string | null;
     email: string | null;
     image: string | null;
@@ -74,7 +78,7 @@ export default function PendingApplicationsSummary({
               <Img src={DUB_WORDMARK} height="32" alt="Dub" />
             </Section>
 
-            <Heading className="mx-0 mt-10 mb-5 p-0 text-lg font-medium text-black">
+            <Heading className="mx-0 mb-5 mt-10 p-0 text-lg font-medium text-black">
               {nFormatter(totalCount, { full: true })}{" "}
               {pluralize("partner application", totalCount)} pending review
             </Heading>
@@ -96,7 +100,7 @@ export default function PendingApplicationsSummary({
               {partners.map((partner, index) => {
                 return (
                   <Section
-                    key={partner.id}
+                    key={partner.applicationId}
                     className={`rounded-lg border border-solid border-neutral-200 bg-neutral-50 p-4 ${index < partners.length - 1 ? "mb-3" : ""}`}
                   >
                     <Row>
@@ -130,8 +134,8 @@ export default function PendingApplicationsSummary({
                       </Column>
                       <Column width={90} align="right" valign="middle">
                         <Link
-                          href={`${applicationsUrl}?partnerId=${partner.id}`}
-                          className="box-border inline-block rounded-md border border-solid border-neutral-200 bg-white px-4 py-2 text-center text-sm leading-none font-medium text-black no-underline"
+                          href={`${applicationsUrl}?applicationId=${partner.applicationId}`}
+                          className="box-border inline-block rounded-md border border-solid border-neutral-200 bg-white px-4 py-2 text-center text-sm font-medium leading-none text-black no-underline"
                           style={{ whiteSpace: "nowrap" }}
                         >
                           Review
@@ -146,7 +150,7 @@ export default function PendingApplicationsSummary({
             <Section className="mt-6 text-center">
               <Link
                 href={applicationsUrl}
-                className="box-border block w-full rounded-md bg-black px-2 py-3 text-center text-sm leading-none font-medium text-white no-underline"
+                className="box-border block w-full rounded-md bg-black px-2 py-3 text-center text-sm font-medium leading-none text-white no-underline"
               >
                 View all applications
               </Link>
