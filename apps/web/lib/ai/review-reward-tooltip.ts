@@ -360,7 +360,7 @@ function formatCondition(
     CONDITION_OPERATOR_LABELS[condition.operator] ?? condition.operator;
   const field = condition.metadataField
     ? `${attribute?.label ?? condition.attribute} (${condition.metadataField})`
-    : attribute?.label ?? condition.attribute;
+    : (attribute?.label ?? condition.attribute);
 
   return `${entity?.label ?? condition.entity} ${field} ${operator} ${formatConditionValue(attribute?.type, condition.value)}`;
 }

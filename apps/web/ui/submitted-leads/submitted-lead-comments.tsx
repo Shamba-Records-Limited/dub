@@ -148,7 +148,7 @@ export function SubmittedLeadComments({ leadId }: { leadId: string }) {
       ) : loading ? (
         <CommentCard className="opacity-50" />
       ) : (
-        <div className="text-content-muted py-4 text-center text-xs">
+        <div className="py-4 text-center text-xs text-content-muted">
           Failed to load comments
         </div>
       )}
@@ -181,7 +181,7 @@ function VisibilitySelector({
                 setPartnerVisible(option.partnerVisible);
                 setOpenPopover(false);
               }}
-              className="text-content-default hover:bg-bg-muted flex h-8 items-center justify-between gap-2 rounded-md px-2 text-sm"
+              className="flex h-8 items-center justify-between gap-2 rounded-md px-2 text-sm text-content-default hover:bg-bg-muted"
             >
               {option.label}
               {option.partnerVisible === partnerVisible && (
@@ -198,11 +198,11 @@ function VisibilitySelector({
       <button
         type="button"
         onClick={() => setOpenPopover(!openPopover)}
-        className="text-content-emphasis hover:bg-bg-muted data-[state=open]:bg-bg-muted flex h-8 items-center gap-2 rounded-lg px-2.5 text-sm font-medium transition-colors"
+        className="flex h-8 items-center gap-2 rounded-lg px-2.5 text-sm font-medium text-content-emphasis transition-colors hover:bg-bg-muted data-[state=open]:bg-bg-muted"
       >
         <Eye className="size-3.5 shrink-0" />
         <span className="whitespace-nowrap">{selected.label}</span>
-        <ChevronDown className="text-content-subtle size-2.5 shrink-0" />
+        <ChevronDown className="size-2.5 shrink-0 text-content-subtle" />
       </button>
     </Popover>
   );
@@ -278,11 +278,11 @@ export function CommentCard({
                 alt={`${comment.user.name} avatar`}
                 className="size-4 shrink-0 rounded-full"
               />
-              <span className="text-content-emphasis truncate text-xs font-semibold">
+              <span className="truncate text-xs font-semibold text-content-emphasis">
                 {comment.user.name}
               </span>
               {program && !isFromPartner && (
-                <span className="bg-bg-subtle text-content-default flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium">
+                <span className="flex items-center gap-1 rounded-md bg-bg-subtle px-1.5 py-0.5 text-xs font-medium text-content-default">
                   <img
                     src={program.logo || `${OG_AVATAR_URL}${program.id}`}
                     alt={`${program.name} logo`}
@@ -292,7 +292,7 @@ export function CommentCard({
                 </span>
               )}
               {!isPartnerView && isFromPartner && (
-                <span className="bg-bg-subtle text-content-default rounded-md px-1.5 py-0.5 text-xs font-medium">
+                <span className="rounded-md bg-bg-subtle px-1.5 py-0.5 text-xs font-medium text-content-default">
                   Partner
                 </span>
               )}
@@ -302,8 +302,8 @@ export function CommentCard({
                   Partner visible
                 </span>
               )}
-              <div className="bg-content-muted size-0.5 shrink-0 rounded-full" />
-              <span className="text-content-subtle whitespace-nowrap text-xs">
+              <div className="size-0.5 shrink-0 rounded-full bg-content-muted" />
+              <span className="whitespace-nowrap text-xs text-content-subtle">
                 {timeAgo(new Date(comment.createdAt), { withAgo: true })}
               </span>
               {comment.delivered === false && (
@@ -363,7 +363,7 @@ export function CommentCard({
           >
             <Button
               variant="secondary"
-              className="data-[state=open]:border-border-emphasis size-7 border-transparent bg-transparent p-0"
+              className="size-7 border-transparent bg-transparent p-0 data-[state=open]:border-border-emphasis"
               icon={
                 isDeleting ? (
                   <LoadingSpinner className="size-4 shrink-0" />
@@ -442,7 +442,7 @@ export function CommentCard({
               ) : (
                 <ReactMarkdown
                   className={cn(
-                    "prose prose-sm text-content-default break-words font-normal",
+                    "prose prose-sm break-words font-normal text-content-default",
                     PROSE_STYLES.condensed,
                     "prose-a:font-medium prose-a:underline-offset-4",
                   )}

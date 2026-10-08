@@ -195,7 +195,7 @@ function EditLeadFormSheetForm({
                     <div
                       ref={scrollRef}
                       onScroll={onScroll}
-                      className="scrollbar-hide max-h-[268px] overflow-y-auto [clip-path:inset(0)]"
+                      className="max-h-[268px] overflow-y-auto scrollbar-hide [clip-path:inset(0)]"
                     >
                       <div className="divide-y divide-neutral-200">
                         {groups.map((group) => (

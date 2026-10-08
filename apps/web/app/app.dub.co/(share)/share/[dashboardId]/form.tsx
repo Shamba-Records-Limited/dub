@@ -20,7 +20,7 @@ export default function DashboardPasswordForm() {
     <form action={formAction} className="flex w-full flex-col gap-5">
       <input type="hidden" name="dashboardId" value={dashboardId} />
       <label>
-        <span className="text-content-emphasis mb-2 block text-sm font-medium leading-none">
+        <span className="mb-2 block text-sm font-medium leading-none text-content-emphasis">
           Password
         </span>
         <Input

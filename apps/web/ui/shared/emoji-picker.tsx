@@ -124,7 +124,7 @@ function EmojiSearchFallback({
 
 function EmojiSearchHeader({ children }: PropsWithChildren) {
   return (
-    <div className="text-content-subtle w-full bg-white px-3 pb-1.5 pt-3 text-xs font-medium">
+    <div className="w-full bg-white px-3 pb-1.5 pt-3 text-xs font-medium text-content-subtle">
       {children}
     </div>
   );
@@ -239,7 +239,7 @@ export function EmojiPicker({
           >
             <EmojiPickerBase.Search
               onChange={(event) => setSearch(event.target.value)}
-              className="border-border-default focus:border-border-default z-10 w-full border-0 border-b bg-white px-3 py-2.5 text-base outline-none placeholder:text-neutral-400 focus:ring-0 sm:rounded-t-lg sm:text-sm"
+              className="z-10 w-full border-0 border-b border-border-default bg-white px-3 py-2.5 text-base outline-none placeholder:text-neutral-400 focus:border-border-default focus:ring-0 sm:rounded-t-lg sm:text-sm"
             />
             <EmojiPickerBase.Viewport className="outline-hidden relative w-full flex-1">
               <EmojiPickerBase.Loading className="absolute inset-0 overflow-hidden">

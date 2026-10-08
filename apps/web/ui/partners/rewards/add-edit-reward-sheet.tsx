@@ -254,7 +254,8 @@ function RewardSheetContent({
         : isDefault;
 
   const partnerCountForConfirm = reward
-    ? rewards?.find((item) => item.id === reward.id)?.partnersCount ?? undefined
+    ? (rewards?.find((item) => item.id === reward.id)?.partnersCount ??
+      undefined)
     : effectiveIsDefault
       ? undefined
       : 0;
@@ -874,7 +875,7 @@ function RewardSheetContent({
                           className="-mx-2.5 overflow-hidden"
                         >
                           <div className="pt-2.5">
-                            <div className="border-border-subtle flex min-w-0 items-center gap-2.5 border-t px-2.5 pt-2.5">
+                            <div className="flex min-w-0 items-center gap-2.5 border-t border-border-subtle px-2.5 pt-2.5">
                               <RewardIconSquare icon={Gift} />
                               <span className="min-w-0 grow leading-relaxed">
                                 Shown as{" "}
@@ -987,7 +988,7 @@ function RewardSheetContent({
                       className="-mx-2.5 overflow-hidden"
                     >
                       <div className="pt-2.5">
-                        <div className="border-border-subtle flex min-w-0 items-center gap-2.5 border-t px-2.5 pt-2.5">
+                        <div className="flex min-w-0 items-center gap-2.5 border-t border-border-subtle px-2.5 pt-2.5">
                           <RewardIconSquare icon={Gift} />
                           <span className="min-w-0 grow leading-relaxed">
                             Shown as{" "}
@@ -1153,15 +1154,15 @@ function RewardSheetCard({
   return (
     <div
       className={cn(
-        "border-border-subtle rounded-xl border bg-white text-sm shadow-sm",
+        "rounded-xl border border-border-subtle bg-white text-sm shadow-sm",
         className,
       )}
     >
-      <div className="text-content-emphasis flex items-center gap-2.5 p-2.5 font-medium">
+      <div className="flex items-center gap-2.5 p-2.5 font-medium text-content-emphasis">
         {title}
       </div>
       {content && (
-        <div className="border-border-subtle -mx-px rounded-xl border-x border-t bg-neutral-50 p-2.5">
+        <div className="-mx-px rounded-xl border-x border-t border-border-subtle bg-neutral-50 p-2.5">
           {content}
         </div>
       )}
@@ -1170,7 +1171,7 @@ function RewardSheetCard({
 }
 
 const VerticalLine = () => (
-  <div className="bg-border-subtle ml-6 h-4 w-px shrink-0" />
+  <div className="ml-6 h-4 w-px shrink-0 bg-border-subtle" />
 );
 
 function AmountInput() {

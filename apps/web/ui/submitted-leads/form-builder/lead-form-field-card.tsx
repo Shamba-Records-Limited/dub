@@ -271,8 +271,8 @@ function LeadFormFieldOptions({
         values={options.map(({ value }) => value)}
         onReorder={(values) =>
           onChange(
-            values.map(
-              (value) => options.find((option) => option.value === value)!,
+            values.map((value) =>
+              options.find((option) => option.value === value)!,
             ),
           )
         }

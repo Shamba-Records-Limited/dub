@@ -89,8 +89,8 @@ export async function recomputePartnerPayoutState(
   const stablecoinActive =
     Boolean(
       cryptoWalletAddress &&
-        cryptoWalletNetwork &&
-        (cryptoWalletsActive || pendingIdVerification),
+      cryptoWalletNetwork &&
+      (cryptoWalletsActive || pendingIdVerification),
     ) ||
     (pendingIdVerification &&
       partner.defaultPayoutMethod === PartnerPayoutMethod.stablecoin);

@@ -477,9 +477,7 @@ function Drafts({
             variant="danger"
             onClick={() => {
               if (
-                !window.confirm(
-                  "Are you sure you want to discard this draft?",
-                )
+                !window.confirm("Are you sure you want to discard this draft?")
               )
                 return;
 
@@ -494,7 +492,7 @@ function Drafts({
     >
       <button
         type="button"
-        className="text-content-muted hover:text-content-emphasis cursor-help text-sm underline decoration-dotted underline-offset-2 transition-colors"
+        className="cursor-help text-sm text-content-muted underline decoration-dotted underline-offset-2 transition-colors hover:text-content-emphasis"
       >
         Unsaved draft
       </button>

@@ -190,7 +190,7 @@ function ConditionalGroup({
         </div>
         <div className="flex items-center gap-1">
           {groupCount > 1 && (
-            <div className="text-content-default flex h-5 items-center rounded-md bg-neutral-200 px-2 text-xs font-medium">
+            <div className="flex h-5 items-center rounded-md bg-neutral-200 px-2 text-xs font-medium text-content-default">
               #{index + 1}
             </div>
           )}
@@ -203,10 +203,10 @@ function ConditionalGroup({
         </div>
       </div>
 
-      <div className="border-border-subtle rounded-lg border bg-white p-2.5">
+      <div className="rounded-lg border border-border-subtle bg-white p-2.5">
         {conditions.map((condition, conditionIndex) => (
           <Fragment key={condition.id}>
-            <div className="border-border-subtle rounded-md border bg-white">
+            <div className="rounded-md border border-border-subtle bg-white">
               <ConditionLogic
                 modifierIndex={index}
                 conditionIndex={conditionIndex}
@@ -230,7 +230,7 @@ function ConditionalGroup({
           />
         </div>
         <VerticalLine />
-        <div className="border-border-subtle flex items-center gap-2.5 rounded-md border bg-white p-2.5">
+        <div className="flex items-center gap-2.5 rounded-md border border-border-subtle bg-white p-2.5">
           <RewardIconSquare icon={MoneyBills2} />
           <ResultTerms modifierIndex={index} />
         </div>
@@ -272,7 +272,8 @@ const formatValue = (
         .map((v) =>
           truncate(
             attribute?.options
-              ? attribute.options.find((o) => o.id === v)?.label ?? v.toString()
+              ? (attribute.options.find((o) => o.id === v)?.label ??
+                  v.toString())
               : v.toString(),
             16,
           ),
@@ -346,11 +347,11 @@ function MetadataConditionOperatorMenu({
       }}
       className="flex cursor-pointer items-center justify-between rounded-md px-1.5 py-1 transition-colors duration-150 data-[selected=true]:bg-neutral-100"
     >
-      <span className="text-content-default pr-3 text-left text-sm font-medium">
+      <span className="pr-3 text-left text-sm font-medium text-content-default">
         {CONDITION_OPERATOR_LABELS[op]}
       </span>
       {selectedValue === op && (
-        <Check2 className="text-content-emphasis size-3.5 shrink-0" />
+        <Check2 className="size-3.5 shrink-0 text-content-emphasis" />
       )}
     </Command.Item>
   );
@@ -358,18 +359,18 @@ function MetadataConditionOperatorMenu({
   return (
     <div className="-mx-1 box-border w-[calc(100%+0.5rem)] min-w-0 max-w-none">
       <Command loop className="w-full focus:outline-none">
-        <Command.List className="scrollbar-hide flex max-h-64 w-full max-w-52 flex-col gap-1 overflow-y-auto transition-all">
-          <div className="text-content-subtle mx-2 py-2 text-xs font-medium">
+        <Command.List className="flex max-h-64 w-full max-w-52 flex-col gap-1 overflow-y-auto transition-all scrollbar-hide">
+          <div className="mx-2 py-2 text-xs font-medium text-content-subtle">
             Text fields
           </div>
           <div className="mx-1 flex flex-col gap-1">
             {METADATA_TEXT_CONDITION_OPERATORS.map(renderItem)}
           </div>
           <div
-            className="bg-border-subtle mt-1 h-px w-full min-w-0 shrink-0"
+            className="mt-1 h-px w-full min-w-0 shrink-0 bg-border-subtle"
             role="separator"
           />
-          <div className="text-content-subtle mx-2 py-2 text-xs font-medium">
+          <div className="mx-2 py-2 text-xs font-medium text-content-subtle">
             Number fields
           </div>
           <div className="mx-1 flex flex-col gap-1">
@@ -411,19 +412,19 @@ function ConditionLogic({
   );
   const highlightOperator = Boolean(
     suggestion &&
-      suggestionTouchesField({
-        field: "operator",
-        current: condition ?? {},
-        suggested: suggestion.suggested,
-      }),
+    suggestionTouchesField({
+      field: "operator",
+      current: condition ?? {},
+      suggested: suggestion.suggested,
+    }),
   );
   const highlightValue = Boolean(
     suggestion &&
-      suggestionTouchesField({
-        field: "value",
-        current: condition ?? {},
-        suggested: suggestion.suggested,
-      }),
+    suggestionTouchesField({
+      field: "value",
+      current: condition ?? {},
+      suggested: suggestion.suggested,
+    }),
   );
 
   const [displayProductLabel, setDisplayProductLabel] = useState(false);
@@ -450,12 +451,12 @@ function ConditionLogic({
     METADATA_NUMBER_CONDITION_OPERATORS.includes(condition.operator);
 
   const icon = entity
-    ? {
+    ? ({
         customer: User,
         sale: InvoiceDollar,
         partner: Users,
         lead: UserPlus,
-      }[entity.id] ?? User
+      }[entity.id] ?? User)
     : ArrowTurnRight2;
 
   const isArrayValue =
@@ -533,7 +534,7 @@ function ConditionLogic({
       <div className="flex items-center justify-between p-2.5">
         <div className="flex items-center gap-1.5">
           <RewardIconSquare icon={icon} />
-          <span className="text-content-emphasis font-medium leading-relaxed">
+          <span className="font-medium leading-relaxed text-content-emphasis">
             {conditionIndex === 0 ? "If" : capitalize(operator?.toLowerCase())}{" "}
             <InlineBadgePopover
               text={capitalize(condition.entity) || "Select item"}
@@ -616,7 +617,7 @@ function ConditionLogic({
                   </>
                 )}
                 {isCustomerSourceCondition || isSaleTypeCondition ? (
-                  <span className="text-content-emphasis font-medium">is </span>
+                  <span className="font-medium text-content-emphasis">is </span>
                 ) : highlightOperator && condition.operator ? (
                   <SuggestedFixBadge
                     text={CONDITION_OPERATOR_LABELS[condition.operator]}
@@ -981,9 +982,9 @@ function ConditionLogic({
             }}
             className="overflow-hidden"
           >
-            <div className="border-border-subtle flex items-center gap-1.5 border-t p-2.5">
+            <div className="flex items-center gap-1.5 border-t border-border-subtle p-2.5">
               <RewardIconSquare icon={Package} />
-              <span className="text-content-emphasis font-medium leading-relaxed">
+              <span className="font-medium leading-relaxed text-content-emphasis">
                 Shown as{" "}
                 <InlineBadgePopover
                   text={condition.label || "Product name"}
@@ -1032,11 +1033,11 @@ function OperatorDropdown({ modifierIndex }: { modifierIndex: number }) {
                   }}
                   className="flex cursor-pointer items-center justify-between rounded-md px-1.5 py-1 transition-colors duration-150 hover:bg-neutral-100"
                 >
-                  <span className="text-content-default pr-3 text-left text-sm font-medium">
+                  <span className="pr-3 text-left text-sm font-medium text-content-default">
                     {value}
                   </span>
                   {currentValue === value && (
-                    <Check2 className="text-content-emphasis size-3.5 shrink-0" />
+                    <Check2 className="size-3.5 shrink-0 text-content-emphasis" />
                   )}
                 </Command.Item>
               ))}
@@ -1047,11 +1048,11 @@ function OperatorDropdown({ modifierIndex }: { modifierIndex: number }) {
     >
       <button
         type="button"
-        className="border-border-subtle text-content-emphasis group flex h-7 items-center gap-1.5 rounded-md border bg-white px-2.5 font-medium transition-colors duration-150 hover:bg-neutral-50"
+        className="group flex h-7 items-center gap-1.5 rounded-md border border-border-subtle bg-white px-2.5 font-medium text-content-emphasis transition-colors duration-150 hover:bg-neutral-50"
       >
         <div className="flex items-center gap-1.5">
           <span>{currentValue}</span>
-          <ChevronRight className="text-content-subtle size-2.5 shrink-0 rotate-90 [&_*]:stroke-2" />
+          <ChevronRight className="size-2.5 shrink-0 rotate-90 text-content-subtle [&_*]:stroke-2" />
         </div>
       </button>
     </Popover>
@@ -1326,5 +1327,5 @@ function AmountInput({
 }
 
 const VerticalLine = () => (
-  <div className="bg-border-subtle ml-6 h-4 w-px shrink-0" />
+  <div className="ml-6 h-4 w-px shrink-0 bg-border-subtle" />
 );

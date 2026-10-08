@@ -406,7 +406,7 @@ export const InlineEmojiAutocomplete = forwardRef<
                 <span className="w-5 shrink-0 text-center text-base leading-none">
                   {item.emoji}
                 </span>
-                <span className="text-content-subtle truncate">
+                <span className="truncate text-content-subtle">
                   {item.label}
                 </span>
               </button>

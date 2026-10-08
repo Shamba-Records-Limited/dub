@@ -300,7 +300,7 @@ export async function reingestCustomerEvents({
   );
 
   const clickEvent = !newHasClick
-    ? oldEvents.find((event) => event.event === "click") ?? null
+    ? (oldEvents.find((event) => event.event === "click") ?? null)
     : null;
   const leadEvents = oldEvents.filter((event) => {
     if (event.event !== "lead") {
@@ -825,7 +825,7 @@ export async function applyClawbackAndReplacementCommissions({
 
   const leadEvent =
     plan.hasPaidLead && !hasExistingLead
-      ? newEvents.find((event) => event.event === "lead") ?? null
+      ? (newEvents.find((event) => event.event === "lead") ?? null)
       : null;
 
   const paidInvoiceIds = new Set(plan.paidInvoiceIds);

@@ -609,8 +609,8 @@ async function recordEvents(args: RecordEventsArgs) {
         });
       }
 
-      stripeCustomerInvoices = requestedInvoiceIds.map(
-        (id) => invoicesById.get(id)!,
+      stripeCustomerInvoices = requestedInvoiceIds.map((id) =>
+        invoicesById.get(id)!,
       );
     }
 

@@ -25,7 +25,8 @@ export const updateSubmittedLeadFormAction = authActionClient
   .inputSchema(schema)
   .action(async ({ parsedInput, ctx }) => {
     const { workspace, user } = ctx;
-    const { submittedLeadFormData, enabledGroupIds, disabledGroupIds } = parsedInput;
+    const { submittedLeadFormData, enabledGroupIds, disabledGroupIds } =
+      parsedInput;
 
     const programId = getDefaultProgramIdOrThrow(workspace);
 

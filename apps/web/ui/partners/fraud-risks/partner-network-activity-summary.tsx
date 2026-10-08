@@ -71,12 +71,12 @@ export function PartnerNetworkActivitySummary({
   const summary = usePartnerNetworkActivitySummary(partnerId);
 
   if (summary.status === "empty") {
-    return <p className="text-content-subtle text-xs">No network activity</p>;
+    return <p className="text-xs text-content-subtle">No network activity</p>;
   }
 
   if (summary.status === "error") {
     return (
-      <p className="text-content-subtle text-xs">
+      <p className="text-xs text-content-subtle">
         Failed to load network activity
       </p>
     );

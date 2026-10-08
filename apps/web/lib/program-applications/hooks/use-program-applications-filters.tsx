@@ -24,8 +24,7 @@ type ProgramApplicationFilterStatus = z.infer<
 >["status"];
 
 type GroupedCount<TKey extends ProgramApplicationFilterKey> =
-  | Array<{ [K in TKey]: string | null } & { _count: number }>
-  | undefined;
+  Array<{ [K in TKey]: string | null } & { _count: number }> | undefined;
 
 function isFilterKey(key: string): key is ProgramApplicationFilterKey {
   return FILTER_KEYS.some((filterKey) => filterKey === key);

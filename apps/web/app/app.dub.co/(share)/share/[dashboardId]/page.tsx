@@ -74,7 +74,7 @@ export default async function DashboardPage(props: {
             <Wordmark className="h-8" />
           </a>
 
-          <div className="animate-slide-up-fade flex w-full max-w-[320px] flex-col items-center [--offset:10px] [animation-duration:1s] [animation-fill-mode:both]">
+          <div className="flex w-full max-w-[320px] animate-slide-up-fade flex-col items-center [--offset:10px] [animation-duration:1s] [animation-fill-mode:both]">
             <div className="flex size-8 items-center justify-center rounded-md bg-neutral-200/60">
               <ShieldKeyhole className="size-[18px] text-neutral-800" />
             </div>

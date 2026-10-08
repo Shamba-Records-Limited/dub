@@ -97,7 +97,7 @@ function PartnerProfileSubmittedLeadSheetContent({
       <div className="grid min-h-0 grow grid-cols-1 gap-x-6 gap-y-2 overflow-y-auto p-4 scrollbar-hide @3xl/sheet:grid-cols-[minmax(440px,1fr)_minmax(0,360px)] sm:gap-y-4 sm:p-6">
         {/* Left side - Lead details */}
         <div className="flex flex-col gap-6">
-          <div className="border-border-subtle overflow-hidden rounded-xl border bg-neutral-100">
+          <div className="overflow-hidden rounded-xl border border-border-subtle bg-neutral-100">
             <SheetTabs
               tabs={[
                 { id: "details", label: "Lead Details", icon: UserPlus },
@@ -111,7 +111,7 @@ function PartnerProfileSubmittedLeadSheetContent({
               currentTabId={currentTabId}
               setCurrentTabId={setCurrentTabId}
             />
-            <div className="border-border-subtle -mx-px -mb-px rounded-xl border bg-white p-4">
+            <div className="-mx-px -mb-px rounded-xl border border-border-subtle bg-white p-4">
               {currentTabId === "details" && (
                 <SubmittedLeadDetails lead={{ formData: lead.formData }} />
               )}

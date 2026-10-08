@@ -525,10 +525,10 @@ function serializeRewardForReview({
           : basePayout.type;
       const amount =
         type === "percentage"
-          ? modifier?.amountInPercentage ??
-            (basePayout.type === "percentage" ? basePayout.amount : null)
-          : modifier?.amountInCents ??
-            (basePayout.type === "flat" ? basePayout.amount : null);
+          ? (modifier?.amountInPercentage ??
+            (basePayout.type === "percentage" ? basePayout.amount : null))
+          : (modifier?.amountInCents ??
+            (basePayout.type === "flat" ? basePayout.amount : null));
 
       return {
         operator: modifier?.operator ?? "AND",

@@ -107,7 +107,7 @@ export function PartnerSubmittedLeadComments({ leadId }: { leadId: string }) {
       ) : loading || !program ? (
         <CommentCard className="opacity-50" />
       ) : (
-        <div className="text-content-muted py-4 text-center text-xs">
+        <div className="py-4 text-center text-xs text-content-muted">
           Failed to load comments
         </div>
       )}

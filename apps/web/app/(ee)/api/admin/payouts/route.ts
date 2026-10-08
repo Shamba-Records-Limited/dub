@@ -72,37 +72,39 @@ export const GET = withAdmin(async ({ searchParams }) => {
     },
   };
 
-  const [invoices, totalInvoices, timeseriesData, programs] = await Promise.all([
-    prisma.invoice.findMany({
-      where: invoiceWhere,
-      include: {
-        program: {
-          select: {
-            name: true,
-            logo: true,
+  const [invoices, totalInvoices, timeseriesData, programs] = await Promise.all(
+    [
+      prisma.invoice.findMany({
+        where: invoiceWhere,
+        include: {
+          program: {
+            select: {
+              name: true,
+              logo: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      skip: ((page ?? 1) - 1) * pageSize,
-      take: pageSize,
-    }),
-    prisma.invoice.count({
-      where: invoiceWhere,
-    }),
-    getPayoutsTimeseries({
-      programId,
-      status,
-      startDate,
-      endDate,
-      granularity,
-      timezone,
-    }),
-    // not scoped to programId so the program filter always lists all top programs
-    getTopProgramsByPayouts({ status, startDate, endDate }),
-  ]);
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip: ((page ?? 1) - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.invoice.count({
+        where: invoiceWhere,
+      }),
+      getPayoutsTimeseries({
+        programId,
+        status,
+        startDate,
+        endDate,
+        granularity,
+        timezone,
+      }),
+      // not scoped to programId so the program filter always lists all top programs
+      getTopProgramsByPayouts({ status, startDate, endDate }),
+    ],
+  );
 
   const formattedInvoices = invoices.map((invoice) => ({
     date: invoice.createdAt,

@@ -63,7 +63,7 @@ export function SubmittedLeadCommentsCard({
             key={idx}
             className="mt-3 rounded-lg border border-solid border-neutral-200 bg-white px-4"
           >
-            <Text className="mb-0 mt-3 text-[12px] text-neutral-500">
+            <Text className="mt-3 mb-0 text-[12px] text-neutral-500">
               <Img
                 src={
                   comment.user.image || `${OG_AVATAR_URL}${comment.user.name}`
@@ -100,7 +100,7 @@ export function SubmittedLeadCommentsCard({
           </Section>
         ))}
         {comments.length > MAX_DISPLAYED_COMMENTS && (
-          <Text className="mb-0 mt-3 text-center text-[12px] text-neutral-500">
+          <Text className="mt-3 mb-0 text-center text-[12px] text-neutral-500">
             {comments.length - MAX_DISPLAYED_COMMENTS} more{" "}
             {comments.length - MAX_DISPLAYED_COMMENTS === 1
               ? "comment"

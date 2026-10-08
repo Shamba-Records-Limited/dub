@@ -21,7 +21,7 @@ export function SheetTabs({
   const layoutGroupId = useId();
 
   return (
-    <div className="scrollbar-hide relative z-0 flex items-center justify-between gap-1 overflow-x-auto p-2">
+    <div className="relative z-0 flex items-center justify-between gap-1 overflow-x-auto p-2 scrollbar-hide">
       <LayoutGroup id={layoutGroupId}>
         <div className="relative z-0 inline-flex items-center gap-1">
           {tabs.map(({ id, label, icon: Icon, badge }) => {
@@ -33,9 +33,9 @@ export function SheetTabs({
                 onClick={() => setCurrentTabId(id)}
                 data-selected={isSelected}
                 className={cn(
-                  "text-content-emphasis relative z-10 flex items-center gap-2 px-2.5 py-1 text-sm font-medium",
+                  "relative z-10 flex items-center gap-2 px-2.5 py-1 text-sm font-medium text-content-emphasis",
                   !isSelected &&
-                    "hover:text-content-subtle z-[11] transition-colors",
+                    "z-[11] transition-colors hover:text-content-subtle",
                   badge && "pr-1",
                 )}
               >
@@ -50,7 +50,7 @@ export function SheetTabs({
                   <motion.div
                     layoutId={layoutGroupId}
                     className={cn(
-                      "border-border-subtle bg-bg-default absolute left-0 top-0 -z-[1] size-full rounded-lg border shadow-sm",
+                      "absolute left-0 top-0 -z-[1] size-full rounded-lg border border-border-subtle bg-bg-default shadow-sm",
                     )}
                     transition={{ duration: 0.25 }}
                   />

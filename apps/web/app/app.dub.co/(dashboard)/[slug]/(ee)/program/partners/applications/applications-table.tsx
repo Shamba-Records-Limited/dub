@@ -765,9 +765,9 @@ function useCurrentApplication({
   const { id: workspaceId } = useWorkspace();
 
   const listedApplication = applicationId
-    ? partners?.find(
+    ? (partners?.find(
         (application) => application.applicationId === applicationId,
-      ) ?? null
+      ) ?? null)
     : null;
 
   const { data: fetchedApplication, isLoading: isApplicationLoading } =

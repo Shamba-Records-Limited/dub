@@ -28,9 +28,9 @@ export default function RiskHistoryLayout({
           <ResolvedRiskEventsFilters
             status={isExpired ? "expired" : "resolved"}
           />
-          <div className="border-border-subtle overflow-hidden rounded-xl border bg-neutral-100">
+          <div className="overflow-hidden rounded-xl border border-border-subtle bg-neutral-100">
             <RiskHistoryNav />
-            <div className="border-border-subtle -mx-px -mb-px overflow-hidden rounded-xl border bg-white">
+            <div className="-mx-px -mb-px overflow-hidden rounded-xl border border-border-subtle bg-white">
               {children}
             </div>
           </div>

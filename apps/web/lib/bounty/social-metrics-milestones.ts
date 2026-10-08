@@ -19,10 +19,7 @@ export interface SocialMetricsMilestoneRow extends SocialMetricsMilestone {
 }
 
 export type SocialMetricsMilestoneStatus =
-  | "approved"
-  | "pending"
-  | "inProgress"
-  | "rejected";
+  "approved" | "pending" | "inProgress" | "rejected";
 
 export type SubmissionMilestoneInput = Pick<
   BountySubmissionProps,

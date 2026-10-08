@@ -73,13 +73,13 @@ export function toLeadFormBuilderField(field: FormField): LeadFormBuilderField {
         ? field.options
         : [],
     // Older multiple choice fields have no value and allow multiple selections
-    multiple: field.type === "multiSelect" ? field.multiple ?? true : false,
+    multiple: field.type === "multiSelect" ? (field.multiple ?? true) : false,
     maxLength:
       field.type === "text" || field.type === "textarea"
-        ? field.constraints?.maxLength ?? null
+        ? (field.constraints?.maxLength ?? null)
         : null,
-    min: field.type === "number" ? field.constraints?.min ?? null : null,
-    max: field.type === "number" ? field.constraints?.max ?? null : null,
+    min: field.type === "number" ? (field.constraints?.min ?? null) : null,
+    max: field.type === "number" ? (field.constraints?.max ?? null) : null,
     pattern: field.type === "text" ? field.constraints?.pattern : undefined,
   };
 }
