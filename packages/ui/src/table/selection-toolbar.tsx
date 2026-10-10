@@ -1,6 +1,6 @@
 import { cn } from "@dub/utils";
 import { Table } from "@tanstack/react-table";
-import { ReactNode, useEffect, useState } from "react";
+import { MouseEvent, ReactNode, useEffect, useState } from "react";
 import { Checkbox } from "../checkbox";
 import { useKeyboardShortcut } from "../hooks";
 
@@ -26,10 +26,15 @@ export function SelectionToolbar<T>({
     modal: false,
   });
 
+  const onSelectAll = (e: MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    table.toggleAllRowsSelected();
+  };
+
   return (
     <div
       className={cn(
-        "w-full border-b border-border-subtle bg-white",
+        "border-border-subtle w-full border-b bg-white",
         "transition-opacity duration-100",
         selectedCount > 0
           ? "pointer-events-auto opacity-100"
@@ -40,17 +45,13 @@ export function SelectionToolbar<T>({
     >
       <div className="flex h-11 items-center py-2.5 pr-2">
         <div className="relative flex h-full w-12 shrink-0 items-center justify-center">
-          <button
-            type="button"
-            className="absolute inset-0 flex items-center justify-center"
-            onClick={(e) => {
-              e.stopPropagation();
-              table.toggleAllRowsSelected();
-            }}
+          <div
+            className="absolute inset-0 flex cursor-pointer items-center justify-center"
+            onClick={onSelectAll}
             title="Select all"
           >
             <Checkbox
-              className="pointer-events-none size-4 rounded border-border-default data-[state=checked]:bg-black data-[state=indeterminate]:bg-black"
+              className="border-border-default size-4 rounded data-[state=checked]:bg-black data-[state=indeterminate]:bg-black"
               checked={
                 table.getIsAllRowsSelected()
                   ? true
@@ -58,13 +59,15 @@ export function SelectionToolbar<T>({
                     ? "indeterminate"
                     : false
               }
+              onClick={onSelectAll}
+              aria-label="Select all"
             />
-          </button>
+          </div>
         </div>
         <div className="flex min-w-0 items-center gap-2.5 pl-1">
           <span
             className={cn(
-              "mr-2 text-sm font-medium tabular-nums text-content-emphasis transition-transform duration-150",
+              "text-content-emphasis mr-2 text-sm font-medium tabular-nums transition-transform duration-150",
               selectedCount > 0 ? "translate-x-0" : "-translate-x-1",
             )}
           >
