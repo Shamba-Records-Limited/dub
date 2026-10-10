@@ -2,6 +2,7 @@
 
 import { clientAccessCheck } from "@/lib/client-access-check";
 import { BILLING_ENABLED } from "@/lib/flags";
+import { useDashboardBannerVisible } from "@/lib/hooks/use-dashboard-banner-visible";
 import useWorkspace from "@/lib/swr/use-workspace";
 import { useRetryPaymentModal } from "@/ui/modals/retry-payment-modal";
 import { useTrialLimitActivateModal } from "@/ui/modals/trial-limit-activate-modal";
@@ -58,8 +59,8 @@ export function UpgradeBanner() {
     useRetryPaymentModal();
   const trialActive = isWorkspaceBillingTrialActive(trialEndsAt);
 
-  const { isVisible, needsUpgrade, subscriptionCanceled } =
-    useUpgradeBannerVisibility();
+  const { needsUpgrade, subscriptionCanceled } = useUpgradeBannerVisibility();
+  const { isUpgradeBannerVisible } = useDashboardBannerVisible();
 
   const permissionsError = clientAccessCheck({
     action: "billing.write",
@@ -76,7 +77,7 @@ export function UpgradeBanner() {
 
   const { isMobile } = useMediaQuery();
 
-  if (!isVisible) return null;
+  if (!isUpgradeBannerVisible) return null;
 
   return (
     <>
@@ -107,7 +108,7 @@ export function UpgradeBanner() {
                     : "payouts"}{" "}
                 limit
               </Link>
-              <span className="hidden xs:inline">
+              <span className="xs:inline hidden">
                 &nbsp;on your current plan
               </span>
               <span className="hidden md:inline">
