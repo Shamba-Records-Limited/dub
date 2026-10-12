@@ -144,9 +144,11 @@ const NAV_AREAS: SidebarNavAreas<SidebarNavData> = {
 
   marketplace: ({ isMobile, invitationsCount }) => ({
     title: <PartnerProgramDropdown />,
-    content: isMobile
-      ? PROGRAMS_CONTENT({ invitationsCount })
-      : <MarketplaceSidebarFilters />,
+    content: isMobile ? (
+      PROGRAMS_CONTENT({ invitationsCount })
+    ) : (
+      <MarketplaceSidebarFilters />
+    ),
     direction: "right",
   }),
 

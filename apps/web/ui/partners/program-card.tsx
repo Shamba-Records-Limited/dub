@@ -120,7 +120,7 @@ export function ProgramCard({
   return (
     <Link
       href={`/programs/${program.slug}`}
-      className="hover:drop-shadow-card-hover flex h-full flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white p-5 transition-[filter]"
+      className="flex h-full flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white p-5 transition-[filter] hover:drop-shadow-card-hover"
     >
       <ProgramLogo program={program} className="size-8" />
       <span className="mt-3 text-base font-semibold text-neutral-800">

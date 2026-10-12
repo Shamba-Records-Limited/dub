@@ -16,7 +16,7 @@ export function ProgramInviteCard({
   const discount = programEnrollment.discount;
 
   return (
-    <div className="hover:drop-shadow-card-hover relative flex flex-col rounded-xl border border-neutral-200 bg-white p-5 transition-[filter]">
+    <div className="relative flex flex-col rounded-xl border border-neutral-200 bg-white p-5 transition-[filter] hover:drop-shadow-card-hover">
       <div className="flex justify-between gap-2">
         <ProgramLogo program={program} className="size-8" />
         <StatusBadge variant="new" icon={CircleCheck} className="py-0.5">

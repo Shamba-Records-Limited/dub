@@ -230,9 +230,8 @@ export async function queueCreateStagingWorkspace({
     return;
   }
 
-  const { createStagingWorkspaceJob } = await import(
-    "../jobs/handlers/create-staging-workspace-job"
-  );
+  const { createStagingWorkspaceJob } =
+    await import("../jobs/handlers/create-staging-workspace-job");
 
   await createStagingWorkspaceJob.dispatch(
     { workspaceId: id },

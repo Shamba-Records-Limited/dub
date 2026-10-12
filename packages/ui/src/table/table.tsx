@@ -169,7 +169,7 @@ export function useTable<T extends any>(
                     title="Select all"
                   >
                     <Checkbox
-                      className="border-border-default size-4 rounded data-[state=checked]:bg-black data-[state=indeterminate]:bg-black"
+                      className="size-4 rounded border-border-default data-[state=checked]:bg-black data-[state=indeterminate]:bg-black"
                       checked={
                         table.getIsAllRowsSelected()
                           ? true
@@ -252,7 +252,7 @@ export function useTable<T extends any>(
                     title="Select"
                   >
                     <Checkbox
-                      className="border-border-default size-4 rounded data-[state=checked]:bg-black data-[state=indeterminate]:bg-black"
+                      className="size-4 rounded border-border-default data-[state=checked]:bg-black data-[state=indeterminate]:bg-black"
                       checked={row.getIsSelected()}
                       onClick={onSelectRow}
                       aria-label="Select"
@@ -376,7 +376,7 @@ const ResizableTableRow = memo(
                   !!onRowClick,
                   isColumnAfterSelect,
                 ),
-                "text-content-default group",
+                "group text-content-default",
                 getCommonPinningClassNames(
                   cell.column,
                   row.index === table.getRowModel().rows.length - 1,
@@ -488,7 +488,7 @@ export function Table<T>({
   return (
     <div
       className={cn(
-        "border-border-subtle bg-bg-default relative z-0 rounded-xl border",
+        "relative z-0 rounded-xl border border-border-subtle bg-bg-default",
         containerClassName,
       )}
     >
@@ -554,7 +554,7 @@ export function Table<T>({
                               false,
                               isColumnAfterSelect,
                             ),
-                            "text-content-emphasis select-none font-medium",
+                            "select-none font-medium text-content-emphasis",
                             getCommonPinningClassNames(
                               header.column,
                               !table.getRowModel().rows.length,
@@ -731,7 +731,7 @@ export function Table<T>({
                                 !!onRowClick,
                                 isColumnAfterSelect,
                               ),
-                              "text-content-default group",
+                              "group text-content-default",
                               getCommonPinningClassNames(
                                 cell.column,
                                 row.index ===
@@ -812,7 +812,7 @@ export function Table<T>({
       ) : (
         <div
           className={cn(
-            "text-content-subtle flex h-96 w-full items-center justify-center text-sm",
+            "flex h-96 w-full items-center justify-center text-sm text-content-subtle",
             emptyWrapperClassName,
           )}
         >
@@ -822,7 +822,7 @@ export function Table<T>({
         </div>
       )}
       {pagination && !error && !!data?.length && !!rowCount && (
-        <div className="border-border-subtle bg-bg-default text-content-default sticky bottom-0 z-10 mx-auto -mt-px flex w-full max-w-full items-center justify-between rounded-b-[inherit] border-t px-4 py-3.5 text-sm leading-6">
+        <div className="sticky bottom-0 z-10 mx-auto -mt-px flex w-full max-w-full items-center justify-between rounded-b-[inherit] border-t border-border-subtle bg-bg-default px-4 py-3.5 text-sm leading-6 text-content-default">
           <div>
             <span className="hidden sm:inline-block">Viewing</span>{" "}
             <span className="font-medium">
@@ -870,7 +870,7 @@ export function Table<T>({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-bg-default/50 absolute inset-0 h-full rounded-xl"
+            className="absolute inset-0 h-full rounded-xl bg-bg-default/50"
           >
             {/* here we're using min(75%,75vh) to ensure proper placement on full height vs partial height tables */}
             <div className="flex h-[min(75%,75vh)] w-full items-center justify-center">
