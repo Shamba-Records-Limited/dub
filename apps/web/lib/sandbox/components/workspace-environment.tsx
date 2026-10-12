@@ -100,7 +100,7 @@ export function WorkspaceEnvironmentBanner() {
       {liveWorkspace ? (
         <Link
           href={pathname.replace(currentWorkspace.slug, liveWorkspace.slug)}
-          className="bg-bg-inverted text-content-inverted shrink-0 rounded-md p-2 text-xs font-medium"
+          className="shrink-0 rounded-md bg-bg-inverted p-2 text-xs font-medium text-content-inverted"
         >
           Exit staging
         </Link>
@@ -170,7 +170,7 @@ export function WorkspaceEnvironmentSwitcher({
       className={buttonClassName}
       onClick={onNavigate}
     >
-      <IsolatedCube className="text-content-emphasis size-4" />
+      <IsolatedCube className="size-4 text-content-emphasis" />
       <span className="block truncate text-sm">{label}</span>
     </Link>
   );

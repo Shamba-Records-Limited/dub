@@ -165,8 +165,8 @@ function WorkspaceList({
   const inviteMembersRestricted = isStagingEnvironment(current?.environment);
   const activeSlug =
     current && isStagingEnvironment(current.environment)
-      ? workspaces.find((w) => w.stagingWorkspaceId === current.id)?.slug ??
-        selected.slug
+      ? (workspaces.find((w) => w.stagingWorkspaceId === current.id)?.slug ??
+        selected.slug)
       : selected.slug;
 
   return (
