@@ -4,6 +4,7 @@ import {
   partnerBountySubmissionSchema,
   PartnerEarningsSchema,
   partnerPayoutMethodSchema,
+  PartnerProfileBountySchema,
   PartnerProfileCustomerSchema,
   partnerProfileEarningsAnalyticsQuerySchema,
   PartnerProfileEarningsSchema,
@@ -755,6 +756,10 @@ export type BountyListProps = z.infer<typeof BountyListSchema>;
 export type GroupBountySummaryProps = z.infer<typeof GroupBountySummarySchema>;
 
 export type PartnerBountyProps = z.infer<typeof PartnerBountySchema>;
+
+export type PartnerProfileBountyProps = z.infer<
+  typeof PartnerProfileBountySchema
+>;
 
 export type BountySubmissionProps = z.infer<
   typeof BountySubmissionExtendedSchema

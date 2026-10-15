@@ -1,6 +1,5 @@
 "use client";
 
-import useProgramEnrollments from "@/lib/swr/use-program-enrollments";
 import useProgramEnrollmentsCount from "@/lib/swr/use-program-enrollments-count";
 import useProgramEnrollmentsStatusCounts from "@/lib/swr/use-program-enrollments-status-counts";
 import { PageWidthWrapper } from "@/ui/layout/page-width-wrapper";
@@ -10,7 +9,12 @@ import { ProgramMarketplaceBanner } from "@/ui/program-marketplace/program-marke
 import { SearchBoxPersisted } from "@/ui/shared/search-box";
 import { formatTabBadgeCount, SheetTabs } from "@/ui/shared/sheet-tabs";
 import { SimpleEmptyState } from "@/ui/shared/simple-empty-state";
-import { ToggleGroup, useLocalStorage, useRouterStuff } from "@dub/ui";
+import {
+  PaginationControls,
+  ToggleGroup,
+  useLocalStorage,
+  useRouterStuff,
+} from "@dub/ui";
 import { GridIcon, HexadecagonStar, TableRows2 } from "@dub/ui/icons";
 import { useId } from "react";
 import {
@@ -19,6 +23,7 @@ import {
   ProgramTab,
 } from "./program-tabs";
 import { ProgramsTable } from "./programs-table";
+import { useProgramsPage } from "./use-programs-page";
 
 type ProgramsView = "grid" | "table";
 
@@ -50,8 +55,8 @@ export function PartnersDashboardPageClient() {
   const tab =
     PROGRAM_TABS.find(({ id }) => id === searchParams.get("tab")) ??
     (statusCounts
-      ? (PROGRAM_TABS.find((programTab) => getTabCount(programTab)) ??
-        PROGRAM_TABS[0])
+      ? PROGRAM_TABS.find((programTab) => getTabCount(programTab)) ??
+        PROGRAM_TABS[0]
       : statusCountsError
         ? PROGRAM_TABS[0]
         : undefined);
@@ -84,7 +89,7 @@ export function PartnersDashboardPageClient() {
           inputClassName="md:w-[16rem]"
         />
         <ToggleGroup
-          className="h-10 shrink-0 gap-0 rounded-lg bg-bg-muted p-0"
+          className="bg-bg-muted h-10 shrink-0 gap-0 rounded-lg p-0"
           optionClassName="h-full rounded-md px-2.5 py-0"
           indicatorClassName="bg-bg-default -left-px -top-px h-[calc(100%+2px)] w-[calc(100%+2px)]"
           options={[
@@ -102,7 +107,7 @@ export function PartnersDashboardPageClient() {
         />
       </div>
 
-      <div className="overflow-clip rounded-xl border border-border-subtle bg-neutral-100">
+      <div className="border-border-subtle overflow-clip rounded-xl border bg-neutral-100">
         <SheetTabs
           tabs={tabs.map(({ id, label, icon }) => ({
             id,
@@ -121,7 +126,7 @@ export function PartnersDashboardPageClient() {
             })
           }
         />
-        <div className="-mx-px -mb-px overflow-clip rounded-xl border border-border-subtle bg-white">
+        <div className="border-border-subtle -mx-px -mb-px overflow-clip rounded-xl border bg-white">
           {tab && view ? (
             <ProgramsTabContent
               tab={tab}
@@ -175,13 +180,18 @@ function ProgramsTabContent({
       countError={countError}
     />
   ) : (
-    <ProgramsGrid tab={tab} search={search} />
+    <ProgramsGrid
+      tab={tab}
+      search={search}
+      count={count}
+      countError={countError}
+    />
   );
 }
 
 function ProgramsGridSkeleton() {
   return (
-    <div className="grid gap-4 p-4 @md/page:grid-cols-2 @3xl/page:grid-cols-3">
+    <div className="@md/page:grid-cols-2 @3xl/page:grid-cols-3 grid gap-4 p-4">
       {Array.from({ length: 3 }).map((_, idx) => (
         <ProgramCardSkeleton key={idx} />
       ))}
@@ -189,15 +199,22 @@ function ProgramsGridSkeleton() {
   );
 }
 
-function ProgramsGrid({ tab, search }: { tab: ProgramTab; search?: string }) {
-  const { programEnrollments, isLoading, error } = useProgramEnrollments({
-    // only the invite cards show the rewards and the discount
-    includeRewardsDiscounts: tab.id === "invitations",
-    status: tab.statuses.join(","),
-    search,
-  });
+function ProgramsGrid({
+  tab,
+  search,
+  count,
+  countError,
+}: {
+  tab: ProgramTab;
+  search?: string;
+  count?: number;
+  countError?: unknown;
+}) {
+  const { programEnrollments, isLoading, error, pagination, setPagination } =
+    useProgramsPage({ tab, search, count });
 
-  if (error) {
+  // like the table, since without the count the grid cannot show its pages
+  if (error || countError) {
     return (
       <div className="py-10 text-center text-sm text-neutral-500">
         Failed to load programs
@@ -206,25 +223,37 @@ function ProgramsGrid({ tab, search }: { tab: ProgramTab; search?: string }) {
   }
 
   return (
-    <div className="grid gap-4 p-4 @md/page:grid-cols-2 @3xl/page:grid-cols-3">
-      {isLoading || !programEnrollments
-        ? Array.from({ length: 3 }).map((_, idx) => (
-            <ProgramCardSkeleton key={idx} />
-          ))
-        : programEnrollments.map((programEnrollment) =>
-            tab.id === "invitations" ? (
-              <ProgramInviteCard
-                key={programEnrollment.programId}
-                programEnrollment={programEnrollment}
-              />
-            ) : (
-              <ProgramCard
-                key={programEnrollment.programId}
-                programEnrollment={programEnrollment}
-              />
-            ),
-          )}
-    </div>
+    <>
+      <div className="@md/page:grid-cols-2 @3xl/page:grid-cols-3 grid gap-4 p-4">
+        {isLoading || !programEnrollments
+          ? Array.from({ length: 3 }).map((_, idx) => (
+              <ProgramCardSkeleton key={idx} />
+            ))
+          : programEnrollments.map((programEnrollment) =>
+              tab.id === "invitations" ? (
+                <ProgramInviteCard
+                  key={programEnrollment.programId}
+                  programEnrollment={programEnrollment}
+                />
+              ) : (
+                <ProgramCard
+                  key={programEnrollment.programId}
+                  programEnrollment={programEnrollment}
+                />
+              ),
+            )}
+      </div>
+      {/* sticky like the table footer, but only when the tab has more than one page */}
+      {count !== undefined && count > pagination.pageSize && (
+        <PaginationControls
+          pagination={pagination}
+          setPagination={setPagination}
+          totalCount={count}
+          unit={(plural) => `${tab.resourceName}${plural ? "s" : ""}`}
+          className="border-border-subtle bg-bg-default sticky bottom-0 z-10 rounded-b-[inherit] border-t px-4 py-3.5"
+        />
+      )}
+    </>
   );
 }
 
@@ -236,32 +265,31 @@ function ProgramsEmptyState({
   search?: string;
 }) {
   return (
-    <div className="py-10">
-      <SimpleEmptyState
-        title={search ? "No programs found" : tab.emptyState.title}
-        description={
-          search
-            ? `No ${tab.resourceName}s match "${search}". Try a different search.`
-            : tab.emptyState.description
-        }
-        graphic={
-          <div className="flex flex-col gap-4 rounded-xl border border-border-subtle p-3 shadow-[0_4px_12px_#0001]">
-            <HexadecagonStar className="size-6 text-content-default" />
-            <div className="flex flex-col gap-2">
-              <div className="h-2.5 w-8 rounded bg-bg-emphasis" />
-              <div className="h-2.5 w-16 rounded bg-bg-emphasis" />
-            </div>
-            <div className="border-subtle grid w-40 max-w-full grid-cols-2 items-center gap-5 rounded-lg border bg-bg-subtle p-2">
-              <div className="flex flex-col gap-2">
-                <div className="h-2.5 w-9 rounded bg-bg-emphasis" />
-                <div className="h-2.5 w-12 rounded bg-bg-inverted" />
-              </div>
-              <EmptyStateChart />
-            </div>
+    <SimpleEmptyState
+      className="md:min-h-0"
+      title={search ? "No programs found" : tab.emptyState.title}
+      description={
+        search
+          ? `No ${tab.resourceName}s match "${search}". Try a different search.`
+          : tab.emptyState.description
+      }
+      graphic={
+        <div className="border-border-subtle flex flex-col gap-4 rounded-xl border p-3 shadow-[0_4px_12px_#0001]">
+          <HexadecagonStar className="text-content-default size-6" />
+          <div className="flex flex-col gap-2">
+            <div className="bg-bg-emphasis h-2.5 w-8 rounded" />
+            <div className="bg-bg-emphasis h-2.5 w-16 rounded" />
           </div>
-        }
-      />
-    </div>
+          <div className="bg-bg-subtle border-subtle grid w-40 max-w-full grid-cols-2 items-center gap-5 rounded-lg border p-2">
+            <div className="flex flex-col gap-2">
+              <div className="bg-bg-emphasis h-2.5 w-9 rounded" />
+              <div className="bg-bg-inverted h-2.5 w-12 rounded" />
+            </div>
+            <EmptyStateChart />
+          </div>
+        </div>
+      }
+    />
   );
 }
 
