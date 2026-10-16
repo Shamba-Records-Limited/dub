@@ -68,7 +68,7 @@ export function OverviewLinks() {
   return (
     <ProgramOverviewCard className="rounded-xl">
       <div className="flex h-12 items-center justify-between gap-2 pl-4 pr-3">
-        <h2 className="text-content-emphasis text-sm font-semibold">
+        <h2 className="text-sm font-semibold text-content-emphasis">
           Program links
         </h2>
         <ButtonLink
@@ -130,14 +130,14 @@ function ProgramLinkRow({
         <div
           tabIndex={0}
           aria-disabled
-          className="hover:bg-bg-inverted/5 flex items-center gap-2.5 rounded-lg p-2 text-sm font-medium transition-colors"
+          className="flex items-center gap-2.5 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-bg-inverted/5"
         >
           <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-neutral-200">
-            <EyeSlash className="text-content-muted size-[18px] shrink-0" />
+            <EyeSlash className="size-[18px] shrink-0 text-content-muted" />
           </div>
           <div className="flex min-w-0 flex-col">
-            <span className="text-content-muted min-w-0 truncate">{label}</span>
-            <span className="text-content-muted truncate text-xs font-medium">
+            <span className="min-w-0 truncate text-content-muted">{label}</span>
+            <span className="truncate text-xs font-medium text-content-muted">
               {getPrettyUrl(href)}
             </span>
           </div>
@@ -166,7 +166,7 @@ function ProgramLinkRow({
               <span className="min-w-0 truncate">{label}</span>
               <ArrowUpRight className="size-3 shrink-0 -translate-x-0.5 opacity-0 transition-[transform,opacity] group-hover:translate-x-0 group-hover:opacity-100 [&_*]:stroke-2" />
             </div>
-            <span className="text-content-muted truncate text-xs font-medium">
+            <span className="truncate text-xs font-medium text-content-muted">
               {getPrettyUrl(href)}
             </span>
           </div>
@@ -182,7 +182,7 @@ function ProgramLinkRow({
           })
         }
         className={cn(
-          "text-content-default bg-bg-inverted/5 absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-lg transition-[opacity,background-color]",
+          "absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-lg bg-bg-inverted/5 text-content-default transition-[opacity,background-color]",
           "opacity-0 focus-visible:opacity-100 group-hover:opacity-100",
           "hover:bg-bg-inverted/10 active:bg-bg-inverted/15",
         )}

@@ -42,10 +42,7 @@ export function InvoicesNav() {
     return <div className="h-12" />;
   }
 
-  const selectedId = resolveInvoiceType(
-    searchParams.get("type"),
-    isProduction,
-  );
+  const selectedId = resolveInvoiceType(searchParams.get("type"), isProduction);
 
   return (
     <PageNavTabs

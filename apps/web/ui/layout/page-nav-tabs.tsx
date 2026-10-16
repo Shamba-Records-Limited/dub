@@ -85,53 +85,55 @@ export function PageNavTabs({
             layout
             className={cn("relative z-0 inline-flex items-center gap-1")}
           >
-            {tabs.map(({ id, label, icon: Icon, badge, href, selected }, idx) => {
-              // if it's the base path, match the first tab
-              const isSelected =
-                selected ??
-                (pathname.endsWith(basePath) && idx === 0
-                  ? true
-                  : pathname.endsWith(`/${id}`));
-              return (
-                <Link
-                  key={id}
-                  href={`${href ?? `${basePath}/${id}`}${
-                    preservedQueryParams
-                      ? getQueryString(
-                          {},
-                          {
-                            include: preservedQueryParams,
-                          },
-                        )
-                      : ""
-                  }`}
-                  data-selected={isSelected}
-                  className={cn(
-                    "relative z-10 flex items-center gap-2 px-2.5 py-1 text-sm font-medium text-content-emphasis",
-                    !isSelected &&
-                      "z-[11] transition-colors hover:text-content-subtle",
-                    badge && "pr-1",
-                  )}
-                >
-                  <Icon className="size-4" />
-                  <span>{label}</span>
-                  {badge && (
-                    <span className="rounded-md bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white">
-                      {badge}
-                    </span>
-                  )}
-                  {isSelected && (
-                    <motion.div
-                      layoutId={layoutGroupId}
-                      className={cn(
-                        "absolute left-0 top-0 -z-[1] size-full rounded-lg border border-border-subtle bg-bg-default shadow-sm",
-                      )}
-                      transition={{ duration: 0.25 }}
-                    />
-                  )}
-                </Link>
-              );
-            })}
+            {tabs.map(
+              ({ id, label, icon: Icon, badge, href, selected }, idx) => {
+                // if it's the base path, match the first tab
+                const isSelected =
+                  selected ??
+                  (pathname.endsWith(basePath) && idx === 0
+                    ? true
+                    : pathname.endsWith(`/${id}`));
+                return (
+                  <Link
+                    key={id}
+                    href={`${href ?? `${basePath}/${id}`}${
+                      preservedQueryParams
+                        ? getQueryString(
+                            {},
+                            {
+                              include: preservedQueryParams,
+                            },
+                          )
+                        : ""
+                    }`}
+                    data-selected={isSelected}
+                    className={cn(
+                      "relative z-10 flex items-center gap-2 px-2.5 py-1 text-sm font-medium text-content-emphasis",
+                      !isSelected &&
+                        "z-[11] transition-colors hover:text-content-subtle",
+                      badge && "pr-1",
+                    )}
+                  >
+                    <Icon className="size-4" />
+                    <span>{label}</span>
+                    {badge && (
+                      <span className="rounded-md bg-blue-600 px-2 py-0.5 text-xs font-semibold text-white">
+                        {badge}
+                      </span>
+                    )}
+                    {isSelected && (
+                      <motion.div
+                        layoutId={layoutGroupId}
+                        className={cn(
+                          "absolute left-0 top-0 -z-[1] size-full rounded-lg border border-border-subtle bg-bg-default shadow-sm",
+                        )}
+                        transition={{ duration: 0.25 }}
+                      />
+                    )}
+                  </Link>
+                );
+              },
+            )}
           </motion.div>
         </LayoutGroup>
 

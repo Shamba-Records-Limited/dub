@@ -125,9 +125,7 @@ async function main() {
         profileType,
         networkStatus,
         l90dCommissions: l90dCommissionsByPartnerId.get(id) ?? 0,
-        categories: [...(categoriesByPartnerId.get(id) ?? [])]
-          .sort()
-          .join(","),
+        categories: [...(categoriesByPartnerId.get(id) ?? [])].sort().join(","),
         ...Object.fromEntries(
           platformTypes.flatMap((type) => {
             const platform = platformsByType[type];

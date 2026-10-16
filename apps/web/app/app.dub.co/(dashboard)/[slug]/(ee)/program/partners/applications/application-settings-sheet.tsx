@@ -14,13 +14,7 @@ import {
 } from "@/ui/partners/eligibility-requirements";
 import { ProgramCategorySelect } from "@/ui/partners/program-category-select";
 import { X } from "@/ui/shared/icons";
-import {
-  Button,
-  Sheet,
-  Sparkle3,
-  ToggleGroup,
-  useEnterSubmit,
-} from "@dub/ui";
+import { Button, Sheet, Sparkle3, ToggleGroup, useEnterSubmit } from "@dub/ui";
 import { cn } from "@dub/utils";
 import { Category } from "@prisma/client";
 import { useAction } from "next-safe-action/hooks";
@@ -201,7 +195,7 @@ function ApplicationSettingsSheetContent({
           <>
             <div className="space-y-3">
               <div>
-                <h4 className="text-content-emphasis text-sm font-medium leading-5 tracking-[-0.02em]">
+                <h4 className="text-sm font-medium leading-5 tracking-[-0.02em] text-content-emphasis">
                   Eligibility requirements (optional)
                 </h4>
                 <p className="text-xs font-normal leading-4 tracking-[-0.02em] text-neutral-500">
@@ -231,7 +225,7 @@ function ApplicationSettingsSheetContent({
 
             <div className="space-y-3">
               <div>
-                <h4 className="text-content-emphasis flex items-center gap-1 text-sm font-medium leading-5 tracking-[-0.02em]">
+                <h4 className="flex items-center gap-1 text-sm font-medium leading-5 tracking-[-0.02em] text-content-emphasis">
                   <Sparkle3 variant="fill" className="size-4 shrink-0" />
                   Application screening (optional)
                 </h4>

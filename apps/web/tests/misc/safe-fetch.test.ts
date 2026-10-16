@@ -147,7 +147,7 @@ describe("safeFetch", () => {
     if (url.hostname === "dns.google") {
       const name = url.searchParams.get("name")!;
       const type = url.searchParams.get("type") as "A" | "AAAA";
-      return dohAnswer(type, type === "A" ? aRecords[name] ?? [] : []);
+      return dohAnswer(type, type === "A" ? (aRecords[name] ?? []) : []);
     }
     return handler(url.toString(), init);
   };

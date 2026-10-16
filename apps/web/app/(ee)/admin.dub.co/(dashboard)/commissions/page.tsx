@@ -234,7 +234,7 @@ function CommissionsPageClient() {
   const groupBy = pathname.endsWith("/partners") ? "partnerId" : "programId";
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const { data: { programs: allPrograms } = {}, } = useSWR<AdminCommissionsData>(
+  const { data: { programs: allPrograms } = {} } = useSWR<AdminCommissionsData>(
     `/api/admin/commissions${getQueryString(
       {
         timezone,
@@ -262,19 +262,17 @@ function CommissionsPageClient() {
     },
   );
 
-  const {
-    data: { programs, partners, timeseries } = {},
-    isLoading,
-  } = useSWR<AdminCommissionsData>(
-    `/api/admin/commissions${getQueryString({
-      timezone,
-      groupBy,
-    })}`,
-    fetcher,
-    {
-      keepPreviousData: true,
-    },
-  );
+  const { data: { programs, partners, timeseries } = {}, isLoading } =
+    useSWR<AdminCommissionsData>(
+      `/api/admin/commissions${getQueryString({
+        timezone,
+        groupBy,
+      })}`,
+      fetcher,
+      {
+        keepPreviousData: true,
+      },
+    );
 
   const ranking = groupBy === "partnerId" ? partners : programs;
 

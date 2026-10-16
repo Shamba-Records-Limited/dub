@@ -163,7 +163,7 @@ const InvoiceCard = ({
               <div className="font-medium">Method</div>
               {invoicePaymentMethod ? (
                 <div className="flex items-center gap-1.5 text-neutral-500">
-                  <div className="text-content-subtle text-sm font-medium">
+                  <div className="text-sm font-medium text-content-subtle">
                     {invoicePaymentMethod.label}
                   </div>
                   <StatusBadge
@@ -211,7 +211,7 @@ const InvoiceCard = ({
             <div className="font-medium">Method</div>
             {invoicePaymentMethod ? (
               <div className="flex items-center gap-1.5 text-neutral-500">
-                <div className="text-content-subtle text-sm font-medium">
+                <div className="text-sm font-medium text-content-subtle">
                   {invoicePaymentMethod.label}
                 </div>
                 <StatusBadge

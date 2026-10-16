@@ -88,7 +88,7 @@ export const GET = withWorkspace(
         holdingPeriodDays:
           rest.type === "custom"
             ? 0
-            : programEnrollment.partnerGroup?.holdingPeriodDays ?? 0,
+            : (programEnrollment.partnerGroup?.holdingPeriodDays ?? 0),
       }),
     );
   },

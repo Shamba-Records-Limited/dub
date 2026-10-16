@@ -148,25 +148,23 @@ export default function PlanUsage() {
   }, [billingCycleStart, planPeriod, billingCycleEndsAt]);
 
   const usageTabs = useMemo(() => {
-    const tabs: Omit<
-      ComponentProps<typeof UsageTabCard>,
-      "managePlanError"
-    >[] = [
-      {
-        resource: "events",
-        icon: CursorRays,
-        title: "Events tracked",
-        usage: usage,
-        limit: usageLimit,
-      },
-      {
-        resource: "links",
-        icon: Hyperlink,
-        title: "Links created",
-        usage: linksUsage,
-        limit: linksLimit,
-      },
-    ];
+    const tabs: Omit<ComponentProps<typeof UsageTabCard>, "managePlanError">[] =
+      [
+        {
+          resource: "events",
+          icon: CursorRays,
+          title: "Events tracked",
+          usage: usage,
+          limit: usageLimit,
+        },
+        {
+          resource: "links",
+          icon: Hyperlink,
+          title: "Links created",
+          usage: linksUsage,
+          limit: linksLimit,
+        },
+      ];
     if (totalLinks && totalLinks > MEGA_WORKSPACE_LINKS_LIMIT) {
       // Find the links tab and move it to the first position
       const linksTabIndex = tabs.findIndex((tab) => tab.resource === "links");
