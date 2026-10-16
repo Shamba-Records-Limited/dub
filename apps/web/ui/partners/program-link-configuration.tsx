@@ -1,6 +1,6 @@
 import type { DomainConnectDiscovery } from "@/lib/domain-connect/types";
-import { isProductionEnvironment } from "@/lib/sandbox/environment";
 import { getLinkStructureOptions } from "@/lib/partners/get-link-structure-options";
+import { isProductionEnvironment } from "@/lib/sandbox/environment";
 import { mutatePrefix } from "@/lib/swr/mutate";
 import useDomains from "@/lib/swr/use-domains";
 import useWorkspace from "@/lib/swr/use-workspace";

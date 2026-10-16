@@ -87,33 +87,24 @@ export const GET = withPartnerProfile(async ({ searchParams }) => {
           </div>
 
           <div tw="flex mt-6" style={{ width: 1130, height: 430 }}>
-            <Chart data={timeseries} background={background} />
+            <Chart data={earnings} background={background} />
           </div>
 
-            <div tw="flex mt-6" style={{ width: 1130, height: 430 }}>
-              <Chart data={earnings} background={background} />
-            </div>
-
-            <div tw="flex justify-between mt-4">
-              <span
-                tw={`text-2xl ${
-                  background === "dark"
-                    ? "text-neutral-400"
-                    : "text-neutral-500"
-                }`}
-              >
-                {startLabel}
-              </span>
-              <span
-                tw={`text-2xl ${
-                  background === "dark"
-                    ? "text-neutral-400"
-                    : "text-neutral-500"
-                }`}
-              >
-                {endLabel}
-              </span>
-            </div>
+          <div tw="flex justify-between mt-4">
+            <span
+              tw={`text-2xl ${
+                background === "dark" ? "text-neutral-400" : "text-neutral-500"
+              }`}
+            >
+              {startLabel}
+            </span>
+            <span
+              tw={`text-2xl ${
+                background === "dark" ? "text-neutral-400" : "text-neutral-500"
+              }`}
+            >
+              {endLabel}
+            </span>
           </div>
         </div>
       </div>

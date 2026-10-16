@@ -73,14 +73,14 @@ export function OverviewTasks() {
   return (
     <ProgramOverviewCard className="rounded-xl">
       <div className="flex h-12 items-center pl-4 pr-3">
-        <h2 className="text-content-emphasis text-sm font-semibold">Tasks</h2>
+        <h2 className="text-sm font-semibold text-content-emphasis">Tasks</h2>
       </div>
       <div className="flex flex-col px-2 pb-2">
         {tasks.map((task) => (
           <Link
             key={task.label}
             href={task.href}
-            className="hover:bg-bg-inverted/5 active:bg-bg-inverted/10 flex items-center justify-between gap-2.5 rounded-lg p-2 text-sm font-medium transition-colors"
+            className="flex items-center justify-between gap-2.5 rounded-lg p-2 text-sm font-medium transition-colors hover:bg-bg-inverted/5 active:bg-bg-inverted/10"
           >
             <div className="flex min-w-0 items-center gap-2.5">
               <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-neutral-200">

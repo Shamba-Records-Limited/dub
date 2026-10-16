@@ -25,15 +25,15 @@ export default function WorkspaceInvoicesLayout({
           >
             Billing
           </Link>
-          <ChevronRight className="text-content-muted size-2.5 shrink-0 [&_*]:stroke-2" />
+          <ChevronRight className="size-2.5 shrink-0 text-content-muted [&_*]:stroke-2" />
           <h1>Invoices</h1>
         </div>
       }
     >
       <PageWidthWrapper>
-        <div className="border-border-subtle mb-10 overflow-hidden rounded-xl border bg-neutral-100">
+        <div className="mb-10 overflow-hidden rounded-xl border border-border-subtle bg-neutral-100">
           <InvoicesNav />
-          <div className="border-border-subtle -mx-px -mb-px overflow-hidden rounded-xl border bg-white">
+          <div className="-mx-px -mb-px overflow-hidden rounded-xl border border-border-subtle bg-white">
             <div className="grid divide-y divide-neutral-200">{children}</div>
           </div>
         </div>

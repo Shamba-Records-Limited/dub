@@ -16,10 +16,7 @@ import {
 import { ReactNode, useMemo } from "react";
 
 type BatchConfirmBlocker =
-  | "belowMinimum"
-  | "notConnected"
-  | "giftCardRange"
-  | "missingTenantId";
+  "belowMinimum" | "notConnected" | "giftCardRange" | "missingTenantId";
 
 type BatchConfirmEligibility = {
   minPayoutAmount: number;

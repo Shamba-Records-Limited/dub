@@ -75,10 +75,10 @@ export default async function ProgramInvitePage(props: {
         <PageContent>
           <div className="flex w-full flex-col items-center justify-center px-4 py-16">
             <div className="flex w-full max-w-[400px] flex-col items-center text-center">
-              <h2 className="text-content-default text-pretty text-lg font-semibold">
+              <h2 className="text-pretty text-lg font-semibold text-content-default">
                 This invitation is for {invitedEmail}
               </h2>
-              <p className="text-content-subtle mt-2 text-pretty text-base font-medium">
+              <p className="mt-2 text-pretty text-base font-medium text-content-subtle">
                 You&apos;re signed in as {user.email}. Sign in with the invited
                 email to view this program invitation.
               </p>

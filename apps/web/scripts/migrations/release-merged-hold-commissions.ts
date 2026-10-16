@@ -111,9 +111,8 @@ async function main() {
 
   // Import after dotenv-flow loads the env. The QStash clients read the token
   // when their module loads, and the release triggers QStash jobs.
-  const { releaseHoldCommissions } = await import(
-    "@/lib/api/fraud/release-hold-commissions"
-  );
+  const { releaseHoldCommissions } =
+    await import("@/lib/api/fraud/release-hold-commissions");
 
   let totalReleased = 0;
 

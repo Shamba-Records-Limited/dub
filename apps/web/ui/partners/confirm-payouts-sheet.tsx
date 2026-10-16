@@ -469,13 +469,13 @@ function ConfirmPayoutsSheetContent() {
         fastAchFee,
       };
     }, [
-    eligiblePayoutsSummaryCount,
-    payoutsIncludedInInvoice,
-    selectedPaymentMethod,
-    program?.payoutMode,
-    payoutFeeWaiverLimit,
-    payoutFeeWaiverUsage,
-  ]);
+      eligiblePayoutsSummaryCount,
+      payoutsIncludedInInvoice,
+      selectedPaymentMethod,
+      program?.payoutMode,
+      payoutFeeWaiverLimit,
+      payoutFeeWaiverUsage,
+    ]);
 
   const invoiceData = useMemo(() => {
     return [

@@ -142,7 +142,7 @@ function FlagPartnerFraudSheetContent({
         </Sheet.Close>
       </div>
 
-      <div className="scrollbar-hide flex min-h-0 flex-1 flex-col overflow-y-auto p-6">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-6 scrollbar-hide">
         <div className="flex flex-col gap-6">
           <div>
             <label className="block text-sm font-medium text-neutral-900">

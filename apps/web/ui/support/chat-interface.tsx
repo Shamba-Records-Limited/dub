@@ -98,10 +98,7 @@ export function ChatInterface({
 
   const { data: workspaces } = useSWR<
     (WorkspaceSummary & { environment: WorkspaceEnvironment })[]
-  >(
-    effectiveAccountType === "workspace" ? "/api/workspaces" : null,
-    fetcher,
-  );
+  >(effectiveAccountType === "workspace" ? "/api/workspaces" : null, fetcher);
   useEffect(() => {
     if (!workspaces || !selection.selectedWorkspace) return;
 

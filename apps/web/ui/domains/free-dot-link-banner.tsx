@@ -51,8 +51,8 @@ export function FreeDotLinkBanner() {
                 <LinkBroken className="m-px size-4 text-green-800" />
               </div>
               <p className="text-sm text-neutral-900">
-                Claim a free <span className="font-semibold">.link</span> domain,
-                free for 1 year.{" "}
+                Claim a free <span className="font-semibold">.link</span>{" "}
+                domain, free for 1 year.{" "}
                 <a
                   href="https://dub.co/help/article/free-dot-link-domain"
                   target="_blank"

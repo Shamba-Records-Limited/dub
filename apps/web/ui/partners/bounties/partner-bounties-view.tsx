@@ -62,7 +62,7 @@ export function PartnerBountiesView<T extends PartnerBountyRow>({
   );
 
   return (
-    <div className="border-border-subtle overflow-clip rounded-xl border bg-neutral-100">
+    <div className="overflow-clip rounded-xl border border-border-subtle bg-neutral-100">
       <SheetTabs
         tabs={PARTNER_BOUNTY_TABS.map((id) => {
           const config = PARTNER_BOUNTY_TAB_CONFIG[id];
@@ -80,7 +80,7 @@ export function PartnerBountiesView<T extends PartnerBountyRow>({
         setCurrentTabId={(id) => queryParams({ set: { tab: id } })}
         right={
           <ToggleGroup
-            className="bg-bg-muted shrink-0 gap-0 rounded-lg p-0"
+            className="shrink-0 gap-0 rounded-lg bg-bg-muted p-0"
             optionClassName="h-7 rounded-md px-1.5 py-0"
             indicatorClassName="bg-bg-default -left-px -top-px h-[calc(100%+2px)] w-[calc(100%+2px)]"
             options={[
@@ -98,7 +98,7 @@ export function PartnerBountiesView<T extends PartnerBountyRow>({
           />
         }
       />
-      <div className="border-border-subtle -mx-px -mb-px overflow-clip rounded-xl border bg-white">
+      <div className="-mx-px -mb-px overflow-clip rounded-xl border border-border-subtle bg-white">
         {tabBounties?.length === 0 ? (
           <BountiesEmptyState tab={tab} allPrograms={showProgram} />
         ) : view === "table" ? (
@@ -161,7 +161,7 @@ function BountiesEmptyState({
               href="https://dub.co/help/article/program-bounties"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-content-default underline sm:whitespace-nowrap"
+              className="underline hover:text-content-default sm:whitespace-nowrap"
             >
               Learn more about bounties
             </a>

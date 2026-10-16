@@ -135,7 +135,7 @@ export function ApplicationAutoApproveSettings({
   return (
     <div className="space-y-3">
       <div>
-        <h4 className="text-content-emphasis text-sm font-medium leading-5 tracking-[-0.02em]">
+        <h4 className="text-sm font-medium leading-5 tracking-[-0.02em] text-content-emphasis">
           Auto-approval settings
         </h4>
         <p className="text-xs font-normal leading-4 tracking-[-0.02em] text-neutral-500">
@@ -242,7 +242,7 @@ function AutoApproveGroupsTable({
       <div
         ref={scrollRef}
         onScroll={(e) => updateFades(e.currentTarget)}
-        className="scrollbar-hide max-h-[268px] overflow-y-auto [clip-path:inset(0)]"
+        className="max-h-[268px] overflow-y-auto scrollbar-hide [clip-path:inset(0)]"
       >
         <div className="divide-y divide-neutral-200">
           {loading

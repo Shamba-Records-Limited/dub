@@ -67,7 +67,7 @@ export function TopProgramsCard() {
                 />
               )}
               <ProgramLogo program={program} className="relative" />
-              <span className="text-content-emphasis relative min-w-0 grow truncate text-xs font-semibold">
+              <span className="relative min-w-0 grow truncate text-xs font-semibold text-content-emphasis">
                 {program.name}
               </span>
             </div>

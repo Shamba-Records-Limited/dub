@@ -57,9 +57,7 @@ async function main() {
 
     const updates = workspaces.map((workspace) => {
       const settings = workspace.installedIntegrations[0]?.settings as
-        | { stripeMode?: unknown }
-        | null
-        | undefined;
+        { stripeMode?: unknown } | null | undefined;
 
       // Parse only stripeMode so unrelated invalid settings don't reset the mode to live
       const parsed = z.enum(StripeConnectMode).safeParse(settings?.stripeMode);

@@ -38,10 +38,7 @@ export async function PartnerPayoutInvoice({
   workspace,
 }: {
   invoice: Invoice;
-  workspace: Pick<
-    Project,
-    "id" | "name" | "slug" | "stripeId" | "environment"
-  >;
+  workspace: Pick<Project, "id" | "name" | "slug" | "stripeId" | "environment">;
 }) {
   const firstEightPayouts = await prisma.payout.findMany({
     where: {

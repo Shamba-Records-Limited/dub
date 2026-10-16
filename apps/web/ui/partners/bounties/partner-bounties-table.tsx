@@ -70,7 +70,7 @@ const COLUMNS: ColumnDef<PartnerBountyRow>[] = [
     minSize: 240,
     cell: ({ row }) => (
       <div className="flex min-w-0 items-center gap-2">
-        <div className="bg-bg-subtle flex size-6 shrink-0 items-center justify-center rounded-md p-1">
+        <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-bg-subtle p-1">
           <BountyThumbnailImage bounty={row.original} />
         </div>
         <span className="truncate font-medium text-neutral-800">
@@ -192,7 +192,7 @@ export function PartnerBountiesTable<T extends PartnerBountyRow>({
           sortOrder:
             newSortBy === "program" && current.sortBy !== "program"
               ? "asc"
-              : sortOrder ?? current.sortOrder,
+              : (sortOrder ?? current.sortOrder),
         };
       });
       setPagination((current) => ({ ...current, pageIndex: 1 }));
