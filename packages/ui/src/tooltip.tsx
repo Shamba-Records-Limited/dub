@@ -87,6 +87,7 @@ export function Tooltip({
   ...rest
 }: TooltipProps) {
   const [open, setOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   return (
     <TooltipPrimitive.Root
@@ -100,7 +101,16 @@ export function Tooltip({
         onClick={() => {
           setOpen(true);
         }}
-        onBlur={() => {
+        onBlur={(e) => {
+          // Keep the tooltip open when focus moves into its content (e.g. a CTA button).
+          // preventDefault also skips Radix's own close-on-blur handler.
+          if (
+            e.relatedTarget instanceof Node &&
+            contentRef.current?.contains(e.relatedTarget)
+          ) {
+            e.preventDefault();
+            return;
+          }
           setOpen(false);
         }}
       >
@@ -108,6 +118,7 @@ export function Tooltip({
       </TooltipPrimitive.Trigger>
       <TooltipPrimitive.Portal>
         <TooltipPrimitive.Content
+          ref={contentRef}
           sideOffset={8}
           side={side}
           className="pointer-events-auto z-[99] animate-slide-up-fade items-center overflow-hidden rounded-xl border border-border-default bg-bg-default shadow-sm"
