@@ -591,6 +591,7 @@ async function stepRunSideEffects(
         groups: {
           select: {
             holdingPeriodDays: true,
+            revenueDataSharingDisabledAt: true,
           },
           where: {
             slug: DEFAULT_PARTNER_GROUP.slug,
@@ -607,14 +608,14 @@ async function stepRunSideEffects(
 
   if (shouldRunRiskMonitoring) {
     const triggeredRules = await detectAndRecordFraudEvent({
-      program: { id: programId },
+      program: { id: programId, workspaceId: workspace.id },
       partner: pick(programEnrollment.partner, ["id", "email", "name"]),
       programEnrollment: pick(programEnrollment, [
         "status",
         "riskMonitoringDisabledAt",
       ]),
       customer: {
-        ...pick(commission.customer!, ["id", "email", "name"]),
+        ...pick(commission.customer!, ["id", "email", "name", "createdAt"]),
         // only pass along isFirstConversion if it's a boolean
         ...(typeof isFirstConversion === "boolean" && { isFirstConversion }),
       },
@@ -719,6 +720,7 @@ async function stepRunSideEffects(
 
     sendPartnerPostback({
       partnerId,
+      programId,
       event: "commission.created",
       data: commission,
     }),

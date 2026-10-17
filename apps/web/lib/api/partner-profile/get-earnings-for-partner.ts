@@ -2,6 +2,7 @@ import { getStartEndDates } from "@/lib/analytics/utils/get-start-end-dates";
 import { DubApiError } from "@/lib/api/errors";
 import { buildPaginationQuery } from "@/lib/api/pagination";
 import { generateRandomName } from "@/lib/names";
+import { isPartnerRevenueHidden } from "@/lib/partners/is-partner-revenue-hidden";
 import { prisma } from "@/lib/prisma";
 import {
   getPartnerEarningsQuerySchema,
@@ -17,6 +18,7 @@ interface GetEarningsForPartnerParams extends z.infer<
 > {
   partnerId: string;
   programId?: string; // if not provided, earnings across all programs (except the network program) are returned
+  includePartnerLinkTitle?: boolean; // only for partner-profile routes, because the workspace creates embed tokens
 }
 
 export async function getEarningsForPartner(
@@ -40,6 +42,7 @@ export async function getEarningsForPartner(
     timezone,
     programId,
     partnerId,
+    includePartnerLinkTitle = false,
   } = params;
 
   const { startDate, endDate } = getStartEndDates({
@@ -122,6 +125,13 @@ export async function getEarningsForPartner(
           id: true,
           shortLink: true,
           url: true,
+          ...(includePartnerLinkTitle && {
+            partnerLinkDetails: {
+              select: {
+                title: true,
+              },
+            },
+          }),
         },
       },
       program: {
@@ -135,6 +145,11 @@ export async function getEarningsForPartner(
       programEnrollment: {
         select: {
           customerDataSharingEnabledAt: true,
+          partnerGroup: {
+            select: {
+              revenueDataSharingDisabledAt: true,
+            },
+          },
         },
       },
     },
@@ -179,8 +194,18 @@ export async function getEarningsForPartner(
       const customerEmail =
         e.customer?.email || e.customer?.name || generateRandomName();
 
-      return {
+      const earning = {
         ...e,
+        link: e.link
+          ? {
+              id: e.link.id,
+              shortLink: e.link.shortLink,
+              url: e.link.url,
+              ...(includePartnerLinkTitle && {
+                partnerLinkTitle: e.link.partnerLinkDetails?.title ?? null,
+              }),
+            }
+          : e.link,
         customer: e.customer
           ? {
               ...e.customer,
@@ -191,6 +216,10 @@ export async function getEarningsForPartner(
             }
           : null,
       };
+
+      return isPartnerRevenueHidden(programEnrollment.partnerGroup)
+        ? { ...earning, amount: null }
+        : earning;
     }),
   );
 }

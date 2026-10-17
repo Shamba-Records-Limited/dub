@@ -66,7 +66,7 @@ export function OverviewLinks() {
   );
 
   return (
-    <ProgramOverviewCard className="rounded-xl">
+    <ProgramOverviewCard>
       <div className="flex h-12 items-center justify-between gap-2 pl-4 pr-3">
         <h2 className="text-sm font-semibold text-content-emphasis">
           Program links
