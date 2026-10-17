@@ -2,24 +2,18 @@ import { editQueryString } from "@/lib/analytics/utils";
 import useProgram from "@/lib/swr/use-program";
 import useWorkspace from "@/lib/swr/use-workspace";
 import { AnalyticsContext } from "@/ui/analytics/analytics-provider";
-import {
-  ArrowRight,
-  BlurImage,
-  Link4,
-  LoadingSpinner,
-  useRouterStuff,
-} from "@dub/ui";
+import { BlurImage, Link4, LoadingSpinner, useRouterStuff } from "@dub/ui";
 import {
   currencyFormatter,
   fetcher,
   GOOGLE_FAVICON_URL,
   nFormatter,
 } from "@dub/utils";
-import Link from "next/link";
 import { useContext } from "react";
 import useSWR from "swr";
 import { ExceededEventsLimit } from "../exceeded-events-limit";
 import { ProgramOverviewBlock } from "../program-overview-block";
+import { ProgramOverviewRow } from "../program-overview-row";
 
 export function TrafficSourcesBlock() {
   const { slug: workspaceSlug, exceededEvents } = useWorkspace();
@@ -53,8 +47,10 @@ export function TrafficSourcesBlock() {
           include: ["interval", "start", "end"],
         },
       )}`}
+      className="pb-3.5"
+      contentClassName="px-3"
     >
-      <div className="flex h-auto flex-col divide-y divide-border-subtle @2xl:h-60">
+      <div className="@2xl:h-[257px] flex h-auto flex-col">
         {exceededEvents ? (
           <ExceededEventsLimit />
         ) : isLoading ? (
@@ -62,16 +58,16 @@ export function TrafficSourcesBlock() {
             <LoadingSpinner />
           </div>
         ) : error ? (
-          <div className="flex size-full items-center justify-center py-4 text-xs text-content-subtle">
+          <div className="text-content-subtle flex size-full items-center justify-center py-4 text-xs">
             Failed to load data
           </div>
         ) : data?.length === 0 ? (
-          <div className="flex size-full items-center justify-center py-4 text-xs text-content-subtle">
+          <div className="text-content-subtle flex size-full items-center justify-center py-4 text-xs">
             No traffic sources found
           </div>
         ) : (
           data?.slice(0, 6).map(({ referer, leads, saleAmount }) => (
-            <Link
+            <ProgramOverviewRow
               key={referer}
               href={`/${workspaceSlug}/program/analytics${getQueryString(
                 { referer },
@@ -79,7 +75,6 @@ export function TrafficSourcesBlock() {
                   include: ["interval", "start", "end"],
                 },
               )}`}
-              className="group flex h-10 items-center justify-between text-xs font-medium text-content-default"
             >
               <div className="flex min-w-0 items-center gap-2">
                 {referer === "(direct)" ? (
@@ -96,7 +91,6 @@ export function TrafficSourcesBlock() {
                 <span className="min-w-0 truncate">
                   {referer === "(direct)" ? "Direct" : referer}
                 </span>
-                <ArrowRight className="size-2.5 -translate-x-0.5 text-content-emphasis opacity-0 transition-[opacity,transform] group-hover:translate-x-0 group-hover:opacity-100 [&_*]:stroke-2" />
               </div>
 
               <span>
@@ -104,7 +98,7 @@ export function TrafficSourcesBlock() {
                   ? nFormatter(leads, { full: true })
                   : currencyFormatter(saleAmount)}
               </span>
-            </Link>
+            </ProgramOverviewRow>
           ))
         )}
       </div>

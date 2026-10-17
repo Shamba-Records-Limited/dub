@@ -7,6 +7,7 @@ import {
   Program,
 } from "@prisma/client";
 import { createId } from "../api/create-id";
+import { detectAndRecordNetworkLevelBans } from "../api/fraud/detect-network-level-bans";
 import { bulkCreateLinks } from "../api/links";
 import { upsertPartnerPlatform } from "../api/partner-profile/upsert-partner-platform";
 import { queuePartnerSearchSync } from "../api/partners/queue-partner-search-sync";
@@ -65,6 +66,10 @@ export async function importPartners(payload: FirstPromoterImportPayload) {
     );
 
     if (affiliates.length > 0) {
+      // Filled as soon as each enrollment is saved, so a partner whose later
+      // step throws still reaches the search sync and the ban check.
+      const enrolled: { id: string; partnerId: string }[] = [];
+
       const results = await Promise.allSettled(
         affiliates.map((affiliate) => {
           const promoterCampaigns = affiliate.promoter_campaigns;
@@ -80,6 +85,7 @@ export async function importPartners(payload: FirstPromoterImportPayload) {
             affiliate,
             group,
             userId,
+            enrolled,
           });
         }),
       );
@@ -97,9 +103,12 @@ export async function importPartners(payload: FirstPromoterImportPayload) {
       // Queue an index update because the imported partners were enrolled.
       // Queued per page rather than per partner.
       await queuePartnerSearchSync({
-        enrollmentIds: results.flatMap((result) =>
-          result.status === "fulfilled" && result.value ? [result.value] : [],
-        ),
+        enrollmentIds: enrolled.map(({ id }) => id),
+      });
+
+      await detectAndRecordNetworkLevelBans({
+        programId: program.id,
+        partnerIds: enrolled.map(({ partnerId }) => partnerId),
       });
     }
 
@@ -120,11 +129,13 @@ async function createPartnerAndLinks({
   affiliate,
   group,
   userId,
+  enrolled,
 }: {
   program: Program;
   affiliate: FirstPromoterPartner;
   group: PartnerGroup & { partnerGroupDefaultLinks: PartnerGroupDefaultLink[] };
   userId: string;
+  enrolled: { id: string; partnerId: string }[];
 }) {
   const partner = await prisma.partner.upsert({
     where: {
@@ -204,6 +215,11 @@ async function createPartnerAndLinks({
       },
     });
 
+  enrolled.push({
+    id: programEnrollment.id,
+    partnerId: programEnrollment.partnerId,
+  });
+
   if (!preservedBan) {
     await approveLinkedApplication({
       applicationId: programEnrollment.applicationId,
@@ -213,16 +229,16 @@ async function createPartnerAndLinks({
 
   if (!program.domain || !program.url) {
     console.error("Program domain or url not found", program.id);
-    return programEnrollment.id;
+    return programEnrollment;
   }
 
   if (preservedBan) {
-    return programEnrollment.id;
+    return programEnrollment;
   }
 
   if (programEnrollment.links.length > 0) {
     console.log("Partner already has links", partner.id);
-    return programEnrollment.id;
+    return programEnrollment;
   }
 
   const links = affiliate.promoter_campaigns.map((campaign, idx) => ({
@@ -244,13 +260,11 @@ async function createPartnerAndLinks({
       links,
     });
   } catch (error) {
-    // The enrollment is already committed, so its ID must still reach the
-    // page-level search sync even when link creation fails.
     console.error(
       `Failed to create links for imported affiliate ${affiliate.id}`,
       error,
     );
   }
 
-  return programEnrollment.id;
+  return programEnrollment;
 }

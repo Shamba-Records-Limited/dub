@@ -55,7 +55,7 @@ export function PageContentWithSidePanel({
     >
       <div
         className={cn(
-          "relative grid min-h-[var(--page-height)] grid-cols-[minmax(340px,1fr)_minmax(0,min-content)] rounded-t-[inherit] bg-neutral-100 @container/page-content [--page-height:calc(100dvh-var(--page-top-margin)-var(--page-bottom-margin)-1px)] lg:bg-white",
+          "@container/page-content relative grid min-h-[var(--page-height)] grid-cols-[minmax(340px,1fr)_minmax(0,min-content)] rounded-t-[inherit] bg-neutral-100 [--page-height:calc(100dvh-var(--page-banner-height)-var(--page-top-margin)-var(--page-bottom-margin)-1px)] lg:bg-white",
           individualScrolling && "h-[var(--page-height)]",
           className,
         )}
@@ -78,7 +78,7 @@ export function PageContentWithSidePanel({
           <div
             className={cn(
               "grow rounded-t-[inherit] bg-white pt-3 lg:pt-5",
-              individualScrolling && "min-h-0 overflow-y-auto scrollbar-hide",
+              individualScrolling && "scrollbar-hide min-h-0 overflow-y-auto",
               contentWrapperClassName,
             )}
           >
@@ -91,14 +91,14 @@ export function PageContentWithSidePanel({
           <div
             className={cn(
               "absolute right-0 top-0 h-full min-h-0 w-0 overflow-hidden bg-white shadow-lg transition-[width]",
-              "@[960px]/page-content:relative @[960px]/page-content:shadow-none",
+              "@[960px]/page-content:shadow-none @[960px]/page-content:relative",
               isSidePanelOpen &&
-                "z-10 w-full @[960px]/page-content:z-auto sm:w-[340px]",
+                "@[960px]/page-content:z-auto z-10 w-full sm:w-[340px]",
             )}
           >
-            <div className="flex size-full min-h-0 w-full flex-col border-l border-border-subtle sm:w-[340px]">
-              <div className="box-content flex h-12 shrink-0 items-center justify-between gap-4 border-b border-border-subtle px-4 sm:h-16 sm:px-6">
-                <h2 className="text-lg font-semibold leading-7 text-content-emphasis">
+            <div className="border-border-subtle flex size-full min-h-0 w-full flex-col border-l sm:w-[340px]">
+              <div className="border-border-subtle box-content flex h-12 shrink-0 items-center justify-between gap-4 border-b px-4 sm:h-16 sm:px-6">
+                <h2 className="text-content-emphasis text-lg font-semibold leading-7">
                   {sidePanel.title}
                 </h2>
                 <div className="flex items-center gap-2">
@@ -106,13 +106,13 @@ export function PageContentWithSidePanel({
                   <button
                     type="button"
                     onClick={() => setIsSidePanelOpen(false)}
-                    className="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 @[960px]/page-content:hidden"
+                    className="@[960px]/page-content:hidden rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900"
                   >
                     <X className="size-4" />
                   </button>
                 </div>
               </div>
-              <div className="flex grow flex-col gap-4 overflow-y-scroll bg-bg-muted p-6 scrollbar-hide">
+              <div className="bg-bg-muted scrollbar-hide flex grow flex-col gap-4 overflow-y-scroll p-6">
                 {sidePanel.content}
               </div>
             </div>

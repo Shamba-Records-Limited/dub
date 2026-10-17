@@ -70,8 +70,8 @@ export function ConversionBlock() {
           </div>
         ) : (
           <div className="flex size-full flex-col">
-            <div className="px-6">
-              <span className="block text-xl font-medium text-content-emphasis">
+            <div className="px-5">
+              <span className="text-content-emphasis block text-xl font-medium">
                 {formatPercentage(
                   (steps.at(
                     // show conversion rate based on program's primary reward event
@@ -86,7 +86,7 @@ export function ConversionBlock() {
               {steps.map((step) => (
                 <div
                   key={step.id}
-                  className="flex flex-col px-6 text-xs font-medium"
+                  className="flex flex-col px-5 text-xs font-medium"
                 >
                   <div className="text-content-muted">{step.label}</div>
                   <span className="text-content-emphasis">
