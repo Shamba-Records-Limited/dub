@@ -35,6 +35,11 @@ const NETWORK_STATUS_BADGE_VARIANT = {
     label: "Approved",
     icon: CircleCheck,
   },
+  banned: {
+    variant: "error",
+    label: "Banned",
+    icon: CircleXmark,
+  },
 } as const;
 
 export function NetworkApprovalGuide() {
@@ -82,7 +87,7 @@ export function NetworkApprovalGuide() {
         className="overflow-hidden"
       >
         <div
-          className="cursor-pointer rounded-2xl bg-neutral-900 p-2 text-content-inverted"
+          className="text-content-inverted cursor-pointer rounded-2xl bg-neutral-900 p-2"
           onClick={(e) => {
             if (isClickOnInteractiveChild(e)) return;
             setIsExpanded((e) => !e);
@@ -95,8 +100,9 @@ export function NetworkApprovalGuide() {
                   Join the Dub Partner Network
                 </h2>
 
-                {partner.networkStatus === "draft" || !isComplete ? (
-                  <div className="flex w-fit items-center gap-1.5 rounded-md bg-bg-default/10 px-2 py-1">
+                {partner.networkStatus !== "banned" &&
+                (partner.networkStatus === "draft" || !isComplete) ? (
+                  <div className="bg-bg-default/10 flex w-fit items-center gap-1.5 rounded-md px-2 py-1">
                     <ProgressCircle
                       progress={completedCount / totalCount}
                       className="text-green-500 [--track-color:#fff3]"
@@ -127,7 +133,7 @@ export function NetworkApprovalGuide() {
                   })()
                 )}
               </div>
-              <p className="text-sm text-content-inverted/60">
+              <p className="text-content-inverted/60 text-sm">
                 Complete the steps to join the Dub Partner Network and start
                 applying to programs in our network.
               </p>
@@ -185,7 +191,7 @@ export function NetworkApprovalGuide() {
                   </div>
                   {!completed && href && (
                     <div className="shrink-0 pr-4">
-                      <ExpandingArrow className="text-neutral-500 group-hover:text-content-inverted" />
+                      <ExpandingArrow className="group-hover:text-content-inverted text-neutral-500" />
                     </div>
                   )}
                 </ConditionalLink>
