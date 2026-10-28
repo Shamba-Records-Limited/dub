@@ -2,7 +2,6 @@ packages:
   - "apps/*"
   - "apps/web/.react-email"
   - "packages/*"
-  - "packages/embeds/*"
 allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true

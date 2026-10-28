@@ -8,7 +8,7 @@ import { assertRateLimit } from "@/lib/upstash/assert-rate-limit";
 import { RATELIMIT_POLICIES } from "@/lib/upstash/ratelimit-policies";
 import { sendEmail } from "@dub/email";
 import LoginLink from "@dub/email/templates/login-link";
-import { APP_DOMAIN, PARTNERS_DOMAIN } from "@dub/utils";
+import { APP_DOMAIN } from "@dub/utils";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { waitUntil } from "@vercel/functions";
@@ -23,11 +23,6 @@ import { headers } from "next/headers";
 import { createId } from "../api/create-id";
 import { isProduction } from "../api/environment";
 import { isSamlEnforcedForEmailDomain } from "../api/workspaces/is-saml-enforced-for-email-domain";
-import { completeProgramApplications } from "../partners/complete-program-applications";
-import {
-  consumeAdminImpersonation,
-  markAdminImpersonation,
-} from "./admin-impersonation";
 import {
   SESSION_COOKIE_NAME,
   USE_SECURE_COOKIES,
@@ -38,7 +33,6 @@ import {
   incrementLoginAttempts,
 } from "./lock-account";
 import { validatePassword } from "./password";
-import { SSO_LOGIN_PROGRAMS } from "./sso-login-programs";
 import { trackDubLead } from "./track-dub-lead";
 
 const CustomPrismaAdapter = (p: PrismaClient) => {
@@ -80,10 +74,6 @@ const CustomPrismaAdapter = (p: PrismaClient) => {
         const verificationToken = await p.verificationToken.delete({
           where: { identifier_token: { identifier, token } },
         });
-
-        if (verificationToken.isAdminImpersonation) {
-          markAdminImpersonation(identifier);
-        }
 
         return verificationToken;
       } catch (error: any) {
@@ -347,35 +337,6 @@ export const authOptions: NextAuthOptions = {
         };
       },
     }),
-
-    // SSO Login Programs
-    ...SSO_LOGIN_PROGRAMS.map(({ slug, name, oauth, mapProfile }) => ({
-      id: slug,
-      name,
-      type: "oauth" as const,
-      clientId: oauth.clientId,
-      clientSecret: oauth.clientSecret,
-      checks: ["state" as const],
-      authorization: {
-        url: oauth.authorizationUrl,
-        params: {
-          scope: oauth.scope,
-          response_type: "code",
-        },
-      },
-      token: oauth.tokenUrl,
-      userinfo: oauth.userInfoUrl,
-      profile(profile) {
-        if (mapProfile) return mapProfile(profile);
-        const { sub, email, name, picture } = profile;
-        return {
-          id: sub,
-          name,
-          email,
-          image: picture,
-        };
-      },
-    })),
   ],
   // @ts-ignore
   adapter: CustomPrismaAdapter(prisma),
@@ -407,12 +368,8 @@ export const authOptions: NextAuthOptions = {
         throw new Error("exceeded-login-attempts");
       }
 
-      const isAdminImpersonation =
-        account?.provider === "email" && consumeAdminImpersonation(user.email);
-
       // If the user is not using SAML, we need to check if SAML is enforced for the email domain
       if (
-        !isAdminImpersonation &&
         account?.provider !== "saml" &&
         account?.provider !== "saml-idp" &&
         account?.provider !== "credentials" // for credentials, we do the check in the CredentialsProvider
@@ -535,9 +492,9 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     // baseUrl is NEXTAUTH_URL when it is set (e.g. on localhost), so resolve
-    // against the request's host instead to support redirects on partners
+    // against the request's host instead
     redirect: async ({ url, baseUrl }) => {
-      const trustedOrigins = [baseUrl, APP_DOMAIN, PARTNERS_DOMAIN];
+      const trustedOrigins = [baseUrl, APP_DOMAIN];
       const host = (await headers()).get("host");
       const base =
         trustedOrigins.find((origin) => new URL(origin).host === host) ??
@@ -578,7 +535,6 @@ export const authOptions: NextAuthOptions = {
             image: true,
             isMachine: true,
             defaultWorkspace: true,
-            defaultPartnerId: true,
           },
         });
 
@@ -664,11 +620,6 @@ export const authOptions: NextAuthOptions = {
             });
           })(),
         );
-      }
-
-      // Complete any outstanding program applications
-      if (message.user.email) {
-        waitUntil(completeProgramApplications(message.user.email));
       }
     },
   },
