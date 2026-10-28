@@ -5,9 +5,7 @@ import { expect, test } from "@playwright/test";
 /** Client navigations can finish before a sequential waitForURL runs; pair clicks with URL assertions. */
 const STEP_NAV_TIMEOUT = 60_000;
 
-test("complete workspace onboarding with Dub Links product", async ({
-  page,
-}) => {
+test("complete workspace onboarding", async ({ page }) => {
   test.setTimeout(120_000);
 
   const workspaceName = `Test WS ${nanoid(6)}`;
@@ -36,21 +34,11 @@ test("complete workspace onboarding with Dub Links product", async ({
     .inputValue();
   expect(slug).toBeTruthy();
 
-  const productsHeading = page.getByTestId(testIds.onboarding.stepProducts);
-
-  await Promise.all([
-    expect(page).toHaveURL(/\/onboarding\/products/, {
-      timeout: STEP_NAV_TIMEOUT,
-    }),
-    page.getByTestId(testIds.onboarding.createWorkspace).click(),
-  ]);
-  await expect(productsHeading).toBeVisible({ timeout: STEP_NAV_TIMEOUT });
-
   await Promise.all([
     expect(page).toHaveURL(/\/onboarding\/domain/, {
       timeout: STEP_NAV_TIMEOUT,
     }),
-    page.getByTestId(testIds.onboarding.productCta("links")).click(),
+    page.getByTestId(testIds.onboarding.createWorkspace).click(),
   ]);
 
   // Domain step — skip it
